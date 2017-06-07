@@ -43,8 +43,8 @@ class Plugin {
 	public static function Settings(GenericEvent $event) {
 		// will be executed when the licenses.settings event is dispatched
 		$settings = $event->getSubject();
-		$settings->add_text_setting('licenses', 'Abuse', 'abuse_login', 'Abuse Login:', 'Abuse Login', ABUSE_LOGIN);
-		$settings->add_text_setting('licenses', 'Abuse', 'abuse_key', 'Abuse Key:', 'Abuse Key', ABUSE_KEY);
+		$settings->add_text_setting('General', 'Abuse', 'abuse_imap_user', 'Abuse IMAP User:', 'Abuse IMAP Username', ABUSE_IMAP_USER);
+		$settings->add_text_setting('General', 'Abuse', 'abuse_imap_pass', 'Abuse IMAP Pass:', 'Abuse IMAP Password', ABUSE_IMAP_PASS);
 	}
 
 }

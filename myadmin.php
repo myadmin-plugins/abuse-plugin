@@ -14,9 +14,9 @@ return [
 	'version' => '1.0.1',
 	'type' => 'licenses',
 	'hooks' => [
+		'system.settings' => ['Detain\MyAdminAbuse\Plugin', 'Settings'],
 		/*'plugin.install' => ['Detain\MyAdminAbuse\Plugin', 'Install'],
 		'plugin.uninstall' => ['Detain\MyAdminAbuse\Plugin', 'Uninstall'],
-		'system.settings' => ['Detain\MyAdminAbuse\Plugin', 'Settings'],
 		'function.requirements' => ['Detain\MyAdminAbuse\Plugin', 'Requirements'],
 		'ui.menu' => ['Detain\MyAdminAbuse\Plugin', 'Menu']*/
 	],
