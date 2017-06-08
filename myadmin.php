@@ -12,7 +12,7 @@ return [
 	'home' => 'https://github.com/detain/myadmin-abuse-plugin',
 	'repo' => 'https://github.com/detain/myadmin-abuse-plugin',
 	'version' => '1.0.1',
-	'type' => 'licenses',
+	'type' => 'plugin',
 	'hooks' => [
 		'system.settings' => ['Detain\MyAdminAbuse\Plugin', 'Settings'],
 		/*'plugin.install' => ['Detain\MyAdminAbuse\Plugin', 'Install'],
