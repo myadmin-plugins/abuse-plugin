@@ -7,7 +7,19 @@ use MyAdmin\Settings;
 
 class Plugin {
 
+	public static $name = 'Abuse Plugin';
+	public static $description = 'Allows handling of Abuse emails and honeypots';
+	public static $help = '';
+	public static $type = 'plugin';
+
+
 	public function __construct() {
+	}
+
+	public static function Hooks() {
+		return [
+			'system.settings' => ['Detain\MyAdminAbuse\Plugin', 'Settings'],
+		];
 	}
 
 	public static function Install(GenericEvent $event) {
