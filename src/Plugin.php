@@ -18,7 +18,7 @@ class Plugin {
 
 	public static function Hooks() {
 		return [
-			'system.settings' => ['Detain\MyAdminAbuse\Plugin', 'Settings'],
+			'system.settings' => [__CLASS__, 'Settings'],
 		];
 	}
 
