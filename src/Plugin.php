@@ -17,7 +17,7 @@ class Plugin {
 
 	public static function getHooks() {
 		return [
-			'system.settings' => [__CLASS__, 'Settings'],
+			'system.settings' => [__CLASS__, 'getSettings'],
 		];
 	}
 
@@ -51,7 +51,7 @@ class Plugin {
 		$loader->add_requirement('get_abuse_licenses', '/../vendor/detain/myadmin-abuse-plugin/src/abuse.inc.php');
 	}
 
-	public static function Settings(GenericEvent $event) {
+	public static function getSettings(GenericEvent $event) {
 		// will be executed when the licenses.settings event is dispatched
 		$settings = $event->getSubject();
 		$settings->add_text_setting('General', 'Abuse', 'abuse_imap_user', 'Abuse IMAP User:', 'Abuse IMAP Username', ABUSE_IMAP_USER);
