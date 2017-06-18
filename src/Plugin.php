@@ -3,7 +3,6 @@
 namespace Detain\MyAdminAbuse;
 
 use Symfony\Component\EventDispatcher\GenericEvent;
-use MyAdmin\Settings;
 
 class Plugin {
 
@@ -16,7 +15,7 @@ class Plugin {
 	public function __construct() {
 	}
 
-	public static function Hooks() {
+	public static function getHooks() {
 		return [
 			'system.settings' => [__CLASS__, 'Settings'],
 		];
