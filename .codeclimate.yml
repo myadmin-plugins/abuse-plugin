@@ -21,6 +21,12 @@ engines:
       CyclomaticComplexity:
         reportLevel: 100
     checks:
+      Design/NpathComplexity:
+        enabled: false
+      Design/LongMethod:
+        enabled: false
+      CyclomaticComplexity:
+        enabled: false
       ExcessivePublicCount:
         enabled: false
       Design/TooManyPublicMethods:
