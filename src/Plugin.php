@@ -18,11 +18,11 @@ class Plugin {
 	public static function getHooks() {
 		return [
 			'system.settings' => [__CLASS__, 'getSettings'],
-			'ui.menu' => [__CLASS__, 'Menu'],
+			'ui.menu' => [__CLASS__, 'getMenu'],
 		];
 	}
 
-	public static function Menu(GenericEvent $event) {
+	public static function getMenu(GenericEvent $event) {
 		$menu = $event->getSubject();
 		if ($GLOBALS['tf']->ima == 'admin') {
 			function_requirements('has_acl');
