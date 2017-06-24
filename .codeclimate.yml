@@ -23,6 +23,8 @@ engines:
     checks:
       Design/NpathComplexity:
         enabled: false
+      Design/WeightedMethodCount:
+        enabled: false
       Design/LongMethod:
         enabled: false
       CyclomaticComplexity:
