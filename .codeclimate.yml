@@ -1,35 +1,35 @@
 ---
 engines:
   duplication:
-	enabled: true
-	config:
-	  languages:
-	  - javascript
-	  - php
-	checks:
-	  Similar code:
-		enabled: false
-	  Identical code:
-		enabled: false
+    enabled: true
+    config:
+      languages:
+      - javascript
+      - php
+    checks:
+      Similar code:
+        enabled: false
+      Identical code:
+        enabled: false
   fixme:
-	enabled: true
+    enabled: true
   phpmd:
-	enabled: true
-	checks:
-	  Design/TooManyPublicMethods:
-		enabled: false
-	  Naming/ShortVariable:
-		enabled: false
-	  CleanCode/BooleanArgumentFlag:
-		enabled: false
-	  Controversial/Superglobals:
-		enabled: false
-	  CleanCode/ElseExpression:
-		enabled: false
-	  CleanCode/StaticAccess:
-		enabled: false
-	  CodeSize/CyclomaticComplexity:
-		reportLevel: 100
+    enabled: true
+    checks:
+      Design/TooManyPublicMethods:
+        enabled: false
+      Naming/ShortVariable:
+        enabled: false
+      CleanCode/BooleanArgumentFlag:
+        enabled: false
+      Controversial/Superglobals:
+        enabled: false
+      CleanCode/ElseExpression:
+        enabled: false
+      CleanCode/StaticAccess:
+        enabled: false
+      CodeSize/CyclomaticComplexity:
+        reportLevel: 100
 ratings:
   paths:
   - "**.inc"
