@@ -15,6 +15,9 @@ engines:
     enabled: true
   phpmd:
     enabled: true
+    config:
+      CodeSize/CyclomaticComplexity:
+        reportLevel: 100
     checks:
       Design/TooManyPublicMethods:
         enabled: false
@@ -29,7 +32,7 @@ engines:
       CleanCode/StaticAccess:
         enabled: false
       CodeSize/CyclomaticComplexity:
-        reportLevel: 100
+        enabled: true
 ratings:
   paths:
   - "**.inc"
