@@ -22,10 +22,9 @@ class Plugin {
 	}
 
 	public static function Menu(GenericEvent $event) {
-		// will be executed when the licenses.settings event is dispatched
 		$menu = $event->getSubject();
 		if ($GLOBALS['tf']->ima == 'admin') {
-			$menu->add_link($module.'api', 'choice=none.abuse_licenses_list', 'whm/createacct.gif', 'List all Abuse');
+			//$menu->add_link('admin', 'choice=none.abuse_licenses_list', 'whm/createacct.gif', 'List all Abuse');
 		}
 	}
 
