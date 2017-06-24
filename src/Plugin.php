@@ -18,13 +18,16 @@ class Plugin {
 	public static function getHooks() {
 		return [
 			'system.settings' => [__CLASS__, 'getSettings'],
+			'ui.menu' => [__CLASS__, 'Menu'],
 		];
 	}
 
 	public static function Menu(GenericEvent $event) {
 		$menu = $event->getSubject();
 		if ($GLOBALS['tf']->ima == 'admin') {
-			//$menu->add_link('admin', 'choice=none.abuse_licenses_list', 'whm/createacct.gif', 'List all Abuse');
+			function_requirements('has_acl');
+	                if (has_acl('client_billing'))
+        	                $menu->add_link('admin', 'choice=none.abuse_admin', '//my.interserver.net/bower_components/webhostinghub-glyphs-icons/icons/development-16/Black/icon-spam.png', 'Abuse');
 		}
 	}
 
