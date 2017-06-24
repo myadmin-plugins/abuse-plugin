@@ -32,7 +32,6 @@ class Plugin {
 	}
 
 	public static function getRequirements(GenericEvent $event) {
-		// will be executed when the licenses.loader event is dispatched
 		$loader = $event->getSubject();
 		$loader->add_requirement('class.Abuse', '/../vendor/detain/myadmin-abuse-plugin/src/Abuse.php');
 		$loader->add_requirement('deactivate_kcare', '/../vendor/detain/myadmin-abuse-plugin/src/abuse.inc.php');
@@ -41,7 +40,6 @@ class Plugin {
 	}
 
 	public static function getSettings(GenericEvent $event) {
-		// will be executed when the licenses.settings event is dispatched
 		$settings = $event->getSubject();
 		$settings->add_text_setting('General', 'Abuse', 'abuse_imap_user', 'Abuse IMAP User:', 'Abuse IMAP Username', ABUSE_IMAP_USER);
 		$settings->add_text_setting('General', 'Abuse', 'abuse_imap_pass', 'Abuse IMAP Pass:', 'Abuse IMAP Password', ABUSE_IMAP_PASS);
