@@ -21,6 +21,8 @@ engines:
       CyclomaticComplexity:
         reportLevel: 100
     checks:
+      UnusedFormalParameter:
+        enabled: false
       Design/NpathComplexity:
         enabled: false
       Design/WeightedMethodCount:
