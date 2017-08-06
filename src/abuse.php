@@ -82,7 +82,7 @@ jQuery(document).ready(function() {
 						$db->next_record(MYSQL_ASSOC);
 						add_output('Abuse Entry Updated <a href="'.$GLOBALS['tf']->link('index.php', 'choice=none.abuse').'">View Pending Abuse Complaints</a>');
 					}
-					$table = new TFTable;
+					$table = new \TFTable;
 					//$table->add_hidden('id', $id);
 					$table->set_post_location('abuse.php?id='.$id . ($logged_in === true || !isset($key) ? '' : '&key='.$key));
 					$table->set_options('cellpadding=3 id="abusetable"');
@@ -150,7 +150,7 @@ jQuery(document).ready(function() {
 		} else {
 			$db->query("select * from abuse where abuse_status='pending' and abuse_lid='" . $db->real_escape($GLOBALS['tf']->accounts->data['account_lid']) . "'");
 			if ($db->num_rows() > 0) {
-				$table = new TFTable;
+				$table = new \TFTable;
 				$table->set_title('Abuse Complaints');
 				$table->add_field('IP');
 				$table->add_field('Time');

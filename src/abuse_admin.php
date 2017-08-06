@@ -36,14 +36,14 @@ function abuse_admin() {
 	% responded / unresponded
 	*/
 	$times = ['24 HOUR', '3 DAY', '7 DAY'];
-	$table2 = new TFTable;
+	$table2 = new \TFTable;
 	$table2->hide_title();
 	$table2->hide_table();
 	$table2->hide_form();
 	if (isset($GLOBALS['tf']->variables->request['lid'])) {
 		$lid = $db->real_escape($GLOBALS['tf']->variables->request['lid']);
 		$lid_data = $GLOBALS['tf']->accounts->read($GLOBALS['tf']->accounts->cross_reference($lid));
-		$table = new TFTable;
+		$table = new \TFTable;
 		$table->set_col_options('style="vertical-align: middle; padding-top: 1px; padding-right: 3px;"');
 		if (isset($lid_data['picture']) && null !== $lid_data['picture'] && $lid_data['picture'] != '')
 			$table->set_title('<span style="float: left;"><img src="'.htmlentities($lid_data['picture'], ENT_QUOTES, 'UTF-8').'" width="20" height="20" alt="" style="padding-left: 5px;"> Customer:</span>');
@@ -55,7 +55,7 @@ function abuse_admin() {
 		$table2->set_col_options('style="vertical-align: top; padding-left: 5px; padding-right: 5px;"');
 		$table2->add_field($table->get_table());
 	}
-	$table_orig = new TFTable;
+	$table_orig = new \TFTable;
 	foreach ($times as $time) {
 		if (isset($lid))
 			$query = "select distinct abuse_ip, sum(abuse_amount) as total_amount, abuse_lid, accounts.account_id, account_value from abuse left join accounts on abuse_lid=account_lid left join accounts_ext on accounts.account_id=accounts_ext.account_id and account_key='picture' where abuse_lid='{$lid}' and abuse_time >= date_sub(now(), INTERVAL {$time}) group by abuse_ip order by sum(abuse_amount) desc {$limit};";
@@ -101,7 +101,7 @@ function abuse_admin() {
 			$db->Record['abuse_headers'] = (mb_strlen($db->Record['abuse_headers']) <= $headerlimit ? $db->Record['abuse_headers'] : '<a href="'.$GLOBALS['tf']->link('index.php', 'choice=none.abuse&lid='.$lid.'&id='.$db->Record['abuse_id']).'" class="btn" data-toggle="popover" data-trigger="hover" data-placement="bottom" '.(stripos($db->Record['abuse_headers'], '<html>') === false ? 'data-html="true" data-content="'.htmlentities(nl2br($db->Record['abuse_headers']), ENT_QUOTES, 'UTF-8').'"' : 'data-html="true" data-content="'.htmlentities($db->Record['abuse_headers'], ENT_QUOTES, 'UTF-8').'"').'>'.mb_substr($db->Record['abuse_headers'], 0, $headerlimit).'...</a>');
 			$rows[] = $db->Record;
 			if (isset($GLOBALS['tf']->variables->request['id']) && $GLOBALS['tf']->variables->request['id'] == $db->Record['abuse_id']) {
-				$table = new TFTable;
+				$table = new \TFTable;
 				$table->set_title('Abuse '.$db->Record['abuse_id'].' Entry');
 				foreach ($db->Record as $key => $value) {
 					$table->add_field($key);
@@ -136,7 +136,7 @@ div.tooltip {
 }
 </style>');
 		add_js('tablesorter');
-		$smarty = new TFSmarty;
+		$smarty = new \TFSmarty;
 		$smarty->debugging = true;
 		$smarty->assign('sortcol', 0);
 		$smarty->assign('sortdir', 1);
@@ -367,7 +367,7 @@ div.tooltip {
 		}
 	}
 
-	$table = new TFTable;
+	$table = new \TFTable;
 	$table->csrf('abuse_admin');
 	$table->set_title('Report Abuse');
 	$table->add_field('Headers');
@@ -401,7 +401,7 @@ div.tooltip {
 	$table->add_field($table->make_submit('Submit'));
 	$table->add_row();
 	add_output($table->get_table());
-	$table = new TFTable;
+	$table = new \TFTable;
 	$table->csrf('abuse_admin_multiple');
 	$table->set_title('Multiple IP Abuse Reporting');
 	$table->add_field('Evidence');
@@ -432,7 +432,7 @@ div.tooltip {
 	$table->add_field($table->make_submit('Submit'));
 	$table->add_row();
 	add_output($table->get_table());
-	$table = new TFTable;
+	$table = new \TFTable;
 	$table->csrf('abuse_admin_uce');
 	$table->set_form_options('enctype="multipart/form-data"');
 	$table->set_title('Import UCEProtect Abuse CSV');
@@ -452,7 +452,7 @@ div.tooltip {
 	$table->add_field($table->make_submit('Submit'));
 	$table->add_row();
 	add_output($table->get_table());
-	$table = new TFTable;
+	$table = new \TFTable;
 	$table->csrf('abuse_admin_trend');
 	$table->set_form_options('enctype="multipart/form-data"');
 	$table->set_title('Import Trend Micro Abuse');
