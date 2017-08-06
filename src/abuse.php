@@ -55,6 +55,7 @@ function abuse() {
 	}
 	unset($continue);
 	if ($GLOBALS['tf']->ima == 'admin' && !isset($GLOBALS['tf']->variables->request['id'])) {
+		function_requirements('abuse_admin');
 		abuse_admin();
 	} else {
 		add_output('Login Not Required<br>');
