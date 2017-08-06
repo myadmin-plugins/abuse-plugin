@@ -7,9 +7,10 @@
  * @package MyAdmin
  * @category Admin
  */
-
 /**
  * @return bool
+ * @throws \Exception
+ * @throws \SmartyException
  */
 function abuse_admin() {
 	function_requirements('get_server_from_ip');

@@ -7,10 +7,12 @@
  * @package MyAdmin
  * @category Admin
  */
-
 /**
  * abuse()
+ *
  * @return bool|void
+ * @throws \Exception
+ * @throws \SmartyException
  */
 function abuse() {
 	/*
