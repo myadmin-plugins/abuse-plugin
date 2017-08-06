@@ -28,7 +28,8 @@ class Plugin {
 	public static function getHooks() {
 		return [
 			'system.settings' => [__CLASS__, 'getSettings'],
-			'ui.menu' => [__CLASS__, 'getMenu']
+			'ui.menu' => [__CLASS__, 'getMenu'],
+			'function.requirements' => [__CLASS__, 'getRequirements']
 		];
 	}
 
@@ -49,10 +50,9 @@ class Plugin {
 	 */
 	public static function getRequirements(GenericEvent $event) {
 		$loader = $event->getSubject();
-		$loader->add_requirement('class.Abuse', '/../vendor/detain/myadmin-abuse-plugin/src/Abuse.php');
-		$loader->add_requirement('deactivate_kcare', '/../vendor/detain/myadmin-abuse-plugin/src/abuse.inc.php');
-		$loader->add_requirement('deactivate_abuse', '/../vendor/detain/myadmin-abuse-plugin/src/abuse.inc.php');
-		$loader->add_requirement('get_abuse_licenses', '/../vendor/detain/myadmin-abuse-plugin/src/abuse.inc.php');
+		$loader->add_requirement('abuse', __DIR__.'/abuse.php');
+		$loader->add_requirement('abuse_admin', __DIR__.'/abuse_admin.php');
+		$loader->add_requirement('class.ImapAbuseCheck', __DIR__.'/ImapAbuseCheck.php');
 	}
 
 	/**
