@@ -33,8 +33,8 @@ function abuse() {
 	$db = get_module_db($module);
 	$GLOBALS['tf']->accounts->set_db_module($module);
 	$GLOBALS['tf']->history->set_db_module($module);
-	$logged_in = false;
-	$continue = false;
+	$logged_in = FALSE;
+	$continue = FALSE;
 	if (isset($GLOBALS['tf']->variables->request['key']) && isset($GLOBALS['tf']->variables->request['id'])) {
 		$key = $GLOBALS['tf']->variables->request['key'];
 		$id = (int)$GLOBALS['tf']->variables->request['id'];
@@ -42,18 +42,18 @@ function abuse() {
 		if ($db->num_rows() == 1) {
 			$db->next_record(MYSQL_ASSOC);
 			if ($db->Record['abuse_key'] == $key) {
-				$continue = true;
+				$continue = TRUE;
 			}
 		}
 	}
 	if (!$continue && $GLOBALS['tf']->session->verify()) {
-		$logged_in = true;
-		$continue = true;
+		$logged_in = TRUE;
+		$continue = TRUE;
 		$GLOBALS['tf']->accounts->data = $GLOBALS['tf']->accounts->read($GLOBALS['tf']->session->account_id);
 	}
-	if ($continue !== true) {
+	if ($continue !== TRUE) {
 		add_output('Invalid Authentication, Please Login first or use the URL given in the email.');
-		return false;
+		return FALSE;
 	}
 	unset($continue);
 	if ($GLOBALS['tf']->ima == 'admin' && !isset($GLOBALS['tf']->variables->request['id'])) {
@@ -75,7 +75,7 @@ jQuery(document).ready(function() {
 				$db->next_record(MYSQL_ASSOC);
 				$ip = $db->Record['abuse_ip'];
 				$server_data = get_server_from_ip($ip);
-				if (($logged_in && $GLOBALS['tf']->accounts->data['account_lid'] == $server_data['email']) || ($logged_in && $GLOBALS['tf']->accounts->data['account_lid'] == $db->Record['abuse_lid']) || ($logged_in == false) || ($GLOBALS['tf']->ima == 'admin')) {
+				if (($logged_in && $GLOBALS['tf']->accounts->data['account_lid'] == $server_data['email']) || ($logged_in && $GLOBALS['tf']->accounts->data['account_lid'] == $db->Record['abuse_lid']) || ($logged_in == FALSE) || ($GLOBALS['tf']->ima == 'admin')) {
 					if (isset($GLOBALS['tf']->variables->request['response'])) {
 						$db->query("update abuse set abuse_status='" . $db->real_escape($GLOBALS['tf']->variables->request['response_status']) . "', abuse_response='" . $db->real_escape($GLOBALS['tf']->variables->request['response']) .	"' where abuse_id=$id", __LINE__, __FILE__);
 						$db->query("select * from abuse where abuse_id=$id");
@@ -84,7 +84,7 @@ jQuery(document).ready(function() {
 					}
 					$table = new \TFTable;
 					//$table->add_hidden('id', $id);
-					$table->set_post_location('abuse.php?id='.$id . ($logged_in === true || !isset($key) ? '' : '&key='.$key));
+					$table->set_post_location('abuse.php?id='.$id . ($logged_in === TRUE || !isset($key) ? '' : '&key='.$key));
 					$table->set_options('cellpadding=3 id="abusetable"');
 					$table->set_title('Manage Abuse Complaint');
 					$table->set_row_options('style="vertical-align: top;"');
@@ -161,7 +161,7 @@ jQuery(document).ready(function() {
 					$table->add_field($db->Record['abuse_ip']);
 					$table->add_field($db->Record['abuse_time']);
 					$table->add_field($db->Record['abuse_type']);
-					$table->add_field('<a href="'.$GLOBALS['tf']->link('abuse.php', 'id='.$db->Record['abuse_id'] . ($logged_in === true ? '' : '&key='.$key)).'">Update</a>');
+					$table->add_field('<a href="'.$GLOBALS['tf']->link('abuse.php', 'id='.$db->Record['abuse_id'] . ($logged_in === TRUE ? '' : '&key='.$key)).'">Update</a>');
 					$table->add_row();
 				}
 				add_output($table->get_table());

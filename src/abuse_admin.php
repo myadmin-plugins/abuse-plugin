@@ -25,7 +25,7 @@ function abuse_admin() {
 	function_requirements('has_acl');
 	if ($GLOBALS['tf']->ima != 'admin' || !has_acl('client_billing')) {
 		dialog('Not admin', 'Not Admin or you lack the permissions to view this page.');
-		return false;
+		return FALSE;
 	}
 	page_title('Report Abuse');
 	$headers = get_default_mail_headers(['TITLE' => 'Abuse', 'EMAIL_FROM' => 'abuse@interserver.net']);
@@ -45,7 +45,7 @@ function abuse_admin() {
 		$lid_data = $GLOBALS['tf']->accounts->read($GLOBALS['tf']->accounts->cross_reference($lid));
 		$table = new \TFTable;
 		$table->set_col_options('style="vertical-align: middle; padding-top: 1px; padding-right: 3px;"');
-		if (isset($lid_data['picture']) && null !== $lid_data['picture'] && $lid_data['picture'] != '')
+		if (isset($lid_data['picture']) && NULL !== $lid_data['picture'] && $lid_data['picture'] != '')
 			$table->set_title('<span style="float: left;"><img src="'.htmlentities($lid_data['picture'], ENT_QUOTES, 'UTF-8').'" width="20" height="20" alt="" style="padding-left: 5px;"> Customer:</span>');
 		else
 			$table->set_title('<span style="float: left;"><span class="glyphicon glyphicon-user " style="padding-left: 5px;"></span> Customer:</span>');
@@ -73,7 +73,7 @@ function abuse_admin() {
 				$table->set_col_options('style="vertical-align: middle; padding-top: 1px; padding-right: 3px;"');
 				$table->add_field($table->make_link('choice=none.abuse&lid='.$db->Record['abuse_lid'], $db->Record['abuse_lid']), 'r');
 				$table->set_col_options('style="vertical-align: middle; padding-top: 1px; padding-right: 3px;"');
-				if (isset($db->Record['account_value']) && null !== $db->Record['account_value'] && $db->Record['account_value'] != '')
+				if (isset($db->Record['account_value']) && NULL !== $db->Record['account_value'] && $db->Record['account_value'] != '')
 					$table->add_field($table->make_link('choice=none.edit_customer3&custid='.$db->Record['account_id'], '<img src="'.htmlentities($db->Record['account_value'], ENT_QUOTES, 'UTF-8').'" width="20" height="20" alt="">'), 'l');
 				else
 					$table->add_field($table->make_link('choice=none.edit_customer3&custid='.$db->Record['account_id'], '<span class="glyphicon glyphicon-user "></span>'), 'l');
@@ -98,7 +98,7 @@ function abuse_admin() {
 					$header[$idx] = ucwords(str_replace('abuse_', '', $field));
 			}
 			$headerlimit = 50;
-			$db->Record['abuse_headers'] = (mb_strlen($db->Record['abuse_headers']) <= $headerlimit ? $db->Record['abuse_headers'] : '<a href="'.$GLOBALS['tf']->link('index.php', 'choice=none.abuse&lid='.$lid.'&id='.$db->Record['abuse_id']).'" class="btn" data-toggle="popover" data-trigger="hover" data-placement="bottom" '.(stripos($db->Record['abuse_headers'], '<html>') === false ? 'data-html="true" data-content="'.htmlentities(nl2br($db->Record['abuse_headers']), ENT_QUOTES, 'UTF-8').'"' : 'data-html="true" data-content="'.htmlentities($db->Record['abuse_headers'], ENT_QUOTES, 'UTF-8').'"').'>'.mb_substr($db->Record['abuse_headers'], 0, $headerlimit).'...</a>');
+			$db->Record['abuse_headers'] = (mb_strlen($db->Record['abuse_headers']) <= $headerlimit ? $db->Record['abuse_headers'] : '<a href="'.$GLOBALS['tf']->link('index.php', 'choice=none.abuse&lid='.$lid.'&id='.$db->Record['abuse_id']).'" class="btn" data-toggle="popover" data-trigger="hover" data-placement="bottom" '.(stripos($db->Record['abuse_headers'], '<html>') === FALSE ? 'data-html="true" data-content="'.htmlentities(nl2br($db->Record['abuse_headers']), ENT_QUOTES, 'UTF-8').'"' : 'data-html="true" data-content="'.htmlentities($db->Record['abuse_headers'], ENT_QUOTES, 'UTF-8').'"').'>'.mb_substr($db->Record['abuse_headers'], 0, $headerlimit).'...</a>');
 			$rows[] = $db->Record;
 			if (isset($GLOBALS['tf']->variables->request['id']) && $GLOBALS['tf']->variables->request['id'] == $db->Record['abuse_id']) {
 				$table = new \TFTable;
@@ -137,7 +137,7 @@ div.tooltip {
 </style>');
 		add_js('tablesorter');
 		$smarty = new \TFSmarty;
-		$smarty->debugging = true;
+		$smarty->debugging = TRUE;
 		$smarty->assign('sortcol', 0);
 		$smarty->assign('sortdir', 1);
 		$smarty->assign('size', 10);
@@ -153,7 +153,7 @@ div.tooltip {
 			if (isset($server_data['email']) && $server_data['email'] != '') {
 				$email = $server_data['email'];
 				$db->query(make_insert_query('abuse', [
-					'abuse_id' => null,
+					'abuse_id' => NULL,
 					'abuse_time' => mysql_now(),
 					'abuse_ip' => $ip,
 					'abuse_type' => $GLOBALS['tf']->variables->request['type'],
@@ -192,7 +192,7 @@ div.tooltip {
 				if (isset($server_data['email']) && $server_data['email'] != '') {
 					$email = $server_data['email'];
 					$db->query(make_insert_query('abuse', [
-						'abuse_id' => null,
+						'abuse_id' => NULL,
 						'abuse_time' => mysql_now(),
 						'abuse_ip' => $ip,
 						'abuse_type' => $GLOBALS['tf']->variables->request['type'],
@@ -230,7 +230,7 @@ div.tooltip {
 		add_output('Importing File<br>');
 		$lines = explode("\n", file_get_contents($_FILES['import']['tmp_name']));
 		for ($x = 0, $x_max = count($lines); $x < $x_max; $x++) {
-			if (mb_strpos($lines[$x], ',') !== false && is_numeric(mb_substr($lines[$x], 0, 1))) {
+			if (mb_strpos($lines[$x], ',') !== FALSE && is_numeric(mb_substr($lines[$x], 0, 1))) {
 				$parts = explode(',', $lines[$x]);
 				$ip = $parts[0];
 				$date = new \DateTime(is_numeric($parts[1]) && mb_strlen($parts[1]) == 10 ? date(MYSQL_DATE_FORMAT, $parts[1]) : $parts[1]);
@@ -246,7 +246,7 @@ div.tooltip {
 					$type = 'uceprotect';
 					$email = $server_data['email'];
 					$db->query(make_insert_query('abuse', [
-						'abuse_id' => null,
+						'abuse_id' => NULL,
 						'abuse_ip' => $ip,
 						'abuse_type' => $type,
 						'abuse_time' => $date,
@@ -281,7 +281,7 @@ div.tooltip {
 		add_output('Importing CSV Text<br>');
 		$lines = explode("\n", $GLOBALS['tf']->variables->request['csvtext']);
 		for ($x = 0, $x_max = count($lines); $x < $x_max; $x++) {
-			if (mb_strpos($lines[$x], ',') !== false && is_numeric(mb_substr($lines[$x], 0, 1))) {
+			if (mb_strpos($lines[$x], ',') !== FALSE && is_numeric(mb_substr($lines[$x], 0, 1))) {
 				$parts = explode(',', $lines[$x]);
 				$ip = $parts[0];
 				$date = new \DateTime((is_numeric($parts[1]) && mb_strlen($parts[1]) == 10) ? date(MYSQL_DATE_FORMAT, $parts[1]) : $parts[1]);
@@ -291,7 +291,7 @@ div.tooltip {
 					$email = $server_data['email'];
 					$type = 'uceprotect';
 					$db->query(make_insert_query('abuse', [
-						'abuse_id' => null,
+						'abuse_id' => NULL,
 						'abuse_ip' => $ip,
 						'abuse_type' => 'uceprotect',
 						'abuse_time' => $date,
@@ -335,7 +335,7 @@ div.tooltip {
 					$email = $server_data['email'];
 					$type = 'trendmicro';
 					$db->query(make_insert_query('abuse', [
-						'abuse_id' => null,
+						'abuse_id' => NULL,
 						'abuse_ip' => $ip,
 						'abuse_type' => $type,
 						'abuse_time' => ['now()'],
@@ -463,5 +463,5 @@ div.tooltip {
 	$table->add_field($table->make_submit('Submit'));
 	$table->add_row();
 	add_output($table->get_table());
-	return true;
+	return TRUE;
 }
