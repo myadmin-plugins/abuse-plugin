@@ -1,8 +1,7 @@
 <?php
 /**
  * TF Related Functionality
- * Last Changed: $LastChangedDate: 2017-08-06 04:10:20 -0400 (Sun, 06 Aug 2017) $
- * @author detain
+ * @author Joe Huss <detain@interserver.net>
  * @copyright 2017
  * @package MyAdmin
  * @category Abuse
