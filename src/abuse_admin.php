@@ -162,7 +162,7 @@ div.tooltip {
 					'abuse_status' => 'pending'
 													]
 						   ), __LINE__, __FILE__);
-				$id = $db->get_last_insert_id('abuse', 'abuse_id');
+				$id = $db->getLastInsertId('abuse', 'abuse_id');
 				$subject = 'InterServer Abuse Report for '.$ip;
 				$message = str_replace(
 					['{$email}', '{$ip}', '{$type}', '{$count}', '{$id}', '{$key}'],
@@ -201,7 +201,7 @@ div.tooltip {
 						'abuse_status' => 'pending'
 														]
 							   ), __LINE__, __FILE__);
-					$id = $db->get_last_insert_id('abuse', 'abuse_id');
+					$id = $db->getLastInsertId('abuse', 'abuse_id');
 					$subject = 'InterServer Abuse Report for '.$ip;
 					$message = str_replace(
 						['{$email}', '{$ip}', '{$type}', '{$count}', '{$id}', '{$key}'],
@@ -255,7 +255,7 @@ div.tooltip {
 						'abuse_status' => 'pending'
 														]
 							   ), __LINE__, __FILE__);
-					$id = $db->get_last_insert_id('abuse', 'abuse_id');
+					$id = $db->getLastInsertId('abuse', 'abuse_id');
 					$subject = 'InterServer Abuse Report for '.$ip;
 					$message = str_replace(
 						['{$email}', '{$ip}', '{$type}', '{$count}', '{$id}', '{$key}'],
@@ -300,7 +300,7 @@ div.tooltip {
 						'abuse_status' => 'pending'
 														]
 							   ), __LINE__, __FILE__);
-					$id = $db->get_last_insert_id('abuse', 'abuse_id');
+					$id = $db->getLastInsertId('abuse', 'abuse_id');
 					$subject = 'InterServer Abuse Report for '.$ip;
 					$message = str_replace(
 						['{$email}', '{$ip}', '{$type}', '{$count}', '{$id}', '{$key}'],
@@ -344,7 +344,7 @@ div.tooltip {
 						'abuse_status' => 'pending'
 														]
 							   ), __LINE__, __FILE__);
-					$id = $db->get_last_insert_id('abuse', 'abuse_id');
+					$id = $db->getLastInsertId('abuse', 'abuse_id');
 					$subject = 'InterServer Abuse Report for '.$ip;
 					$message = str_replace(
 						['{$email}', '{$ip}', '{$type}', '{$count}', '{$id}', '{$key}'],

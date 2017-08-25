@@ -266,7 +266,7 @@ class ImapAbuseCheck
 							'abuse_status' => 'pending'
 															]
 								   ), __LINE__, __FILE__);
-						$id = $db->get_last_insert_id('abuse', 'abuse_id');
+						$id = $db->getLastInsertId('abuse', 'abuse_id');
 						$email_template = file_get_contents(__DIR__.'/templates/abuse.tpl');
 						$message = str_replace(
 							['$email', '$ip', '$type', '$count', '$id', '$key'],
