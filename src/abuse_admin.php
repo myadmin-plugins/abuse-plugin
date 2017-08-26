@@ -110,12 +110,12 @@ function abuse_admin() {
 				add_output($table->get_table());
 			}
 		}
-		$GLOBALS['tf']->add_html_head_js('<script type="text/javascript">
+		$GLOBALS['tf']->add_html_head_js_string('
 jQuery(document).ready(function () {
 	jQuery("[data-toggle=popover]").popover();
 	//jQuery("[data-toggle=tooltip]").tooltip();
 });
-</script>');
+');
 		$GLOBALS['tf']->add_html_head_css('<style type="text/css">
 .tablesorter>body>tr>td {
 	opacity: 1;
