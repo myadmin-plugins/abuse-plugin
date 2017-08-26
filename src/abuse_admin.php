@@ -116,7 +116,7 @@ jQuery(document).ready(function () {
 	//jQuery("[data-toggle=tooltip]").tooltip();
 });
 ');
-		$GLOBALS['tf']->add_html_head_css('<style type="text/css">
+		$GLOBALS['tf']->add_html_head_css_file('
 .tablesorter>body>tr>td {
 	opacity: 1;
 }
@@ -133,7 +133,7 @@ div.tooltip {
 	width: 500px;
 	height: 300px;
 }
-</style>');
+');
 		add_js('tablesorter');
 		$smarty = new \TFSmarty;
 		$smarty->debugging = TRUE;
