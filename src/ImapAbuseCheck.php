@@ -131,7 +131,7 @@ class ImapAbuseCheck
 		[Recent] => 21
 		)*/
 		$this->MC = imap_check($this->mbox);
-		echo "{$this->imap_folder} Got {$this->MC->Nmsgs} Messages".__LINE__.PHP_EOL;
+		echo "{$this->imap_folder} Got {$this->MC->Nmsgs} Messages".PHP_EOL;
 	}
 
 	/**
@@ -242,11 +242,11 @@ class ImapAbuseCheck
 						$email = (null === $server_data['email_abuse'] ? $server_data['email'] : $server_data['email_abuse']);
 						$subject = 'InterServer Abuse Report for '.$ip;
 						if (mb_substr($ip, 0, 10) == '66.45.228.') {
-							echo "{$this->imap_folder} Overwriting IP $ip Contact $email => abuse@interserver.net".__LINE__.PHP_EOL;
+							echo "{$this->imap_folder} Overwriting IP $ip Contact $email => abuse@interserver.net".PHP_EOL;
 							$email = 'abuse@interserver.net';
 						}
 						if ($email == 'sales@3shost.com') {
-							echo "{$this->imap_folder} Overwriting IP $ip Contact $email => abuse@interserver.net".__LINE__.PHP_EOL;
+							echo "{$this->imap_folder} Overwriting IP $ip Contact $email => abuse@interserver.net".PHP_EOL;
 							$email = 'abuse@interserver.net';
 						}
 						if ($email == 'john@interserver.net') {
@@ -276,19 +276,19 @@ class ImapAbuseCheck
 						if (!isset($this->ips[$ip]))
 							$this->ips[$ip] = 0;
 						if ($this->limit_ips === false || ($this->ips[$ip] < $this->limit_ips)) {
-							echo "{$this->imap_folder} Abuse Entry for {$ip} Added - Emailing {$email}".__LINE__.PHP_EOL;
+							echo "{$this->imap_folder} Abuse Entry for {$ip} Added - Emailing {$email}".PHP_EOL;
 							mail($email, $subject, $message, $this->email_headers);
 						} else {
-							echo "{$this->imap_folder} Abuse Entry for {$ip} Added - Not Emailing {$email} ({$this->ips[$ip]} >= {$this->limit_ips} Limit)".__LINE__.PHP_EOL;
+							echo "{$this->imap_folder} Abuse Entry for {$ip} Added - Not Emailing {$email} ({$this->ips[$ip]} >= {$this->limit_ips} Limit)".PHP_EOL;
 						}
 						$this->ips[$ip]++;
 						$this->abused++;
 					} else {
 						//print_r($server_data);
-						echo "{$this->imap_folder} Error Finding Owner For {$ip}".__LINE__.PHP_EOL;
+						echo "{$this->imap_folder} Error Finding Owner For {$ip}".PHP_EOL;
 					}
 				} else {
-					echo "{$this->imap_folder} Invalid IP {$ip} or not ours in Message Headers:" . str_replace("\n", "\n	", $headers) . "\nBody:" . str_replace("\n", "\n	", $body) . "".__LINE__.PHP_EOL;
+					echo "{$this->imap_folder} Invalid IP {$ip} or not ours in Message Headers:" . json_encode(explode("\n", $headers)). "".PHP_EOL;
 				}
 				//echo "OVERVIEW:" . $overview->msgno . " " . $overview->subject . " " . $overview->date . "\nBODY:$body\n";
 				if ($this->delete_attachments == 1) {
@@ -468,7 +468,7 @@ class ImapAbuseCheck
 			echo "Call failed<br />\n";
 		} else {
 			foreach ($folders as $val) {
-				echo $val . "<br />".__LINE__.PHP_EOL;
+				echo $val . "<br />".PHP_EOL;
 			}
 		}
 	}
