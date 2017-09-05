@@ -235,9 +235,8 @@ div.tooltip {
 				$date = new \DateTime(is_numeric($parts[1]) && mb_strlen($parts[1]) == 10 ? date(MYSQL_DATE_FORMAT, $parts[1]) : $parts[1]);
 				if (isset($GLOBALS['tf']->variables->request['dates']) && $GLOBALS['tf']->variables->request['dates'] != 'all' && is_numeric($GLOBALS['tf']->variables->request['dates'])) {
 					$limit_date = new \DateTime(date(MYSQL_DATE_FORMAT, time() - $GLOBALS['tf']->variables->request['dates']));
-					if ($date < $limit_date) {
+					if ($date < $limit_date)
 						continue;
-					}
 				}
 				$date = $date->format(MYSQL_DATE_FORMAT);
 				$server_data = get_server_from_ip($ip);

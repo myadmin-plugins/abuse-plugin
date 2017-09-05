@@ -40,9 +40,8 @@ function abuse() {
 		$db->query("select md5(concat(abuse_id,abuse_ip,abuse_type)) as abuse_key from abuse where abuse_id=$id");
 		if ($db->num_rows() == 1) {
 			$db->next_record(MYSQL_ASSOC);
-			if ($db->Record['abuse_key'] == $key) {
+			if ($db->Record['abuse_key'] == $key)
 				$continue = TRUE;
-			}
 		}
 	}
 	if (!$continue && $GLOBALS['tf']->session->verify()) {

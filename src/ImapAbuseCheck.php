@@ -202,18 +202,16 @@ class ImapAbuseCheck
 					}
 					$match_res = preg_match($match_data['regex'], $match_against, $matches);
 					if ($match_res) {
-						if (trim($matches[$match_data['field']]) != '') {
+						if (trim($matches[$match_data['field']]) != '')
 							$ip = trim($matches[$match_data['field']]);
-						}
 					} else {
 						//print_r($match_res);
 						//echo "{$this->imap_folder} Couldn't Find IP in " . $match_data['against'] . ":\n			" . str_replace("\n", "\n			", $match_against) . "\nUsing " . $match_data['regex'] . "\n";
 					}
 				}
 				foreach ($this->preg_match_all as $match_data) {
-					if ($match_data['against'] == 'body') {
+					if ($match_data['against'] == 'body')
 						$match_against = $body;
-					}
 					if ($match_data['against'] == 'bodyfull') {
 						$match_against = $this->plainmsg;
 					} else {
@@ -249,9 +247,8 @@ class ImapAbuseCheck
 							echo "{$this->imap_folder} Overwriting IP $ip Contact $email => abuse@interserver.net".PHP_EOL;
 							$email = 'abuse@interserver.net';
 						}
-						if ($email == 'john@interserver.net') {
+						if ($email == 'john@interserver.net')
 							$email = 'abuse@interserver.net';
-						}
 						//print_r(array('ip' => $ip, 'email' => $email, 'subject' => $subject, 'plainmsg' => $this->plainmsg, 'htmlmsg' => $this->htmlmsg));
 						//print_r(xml2array(trim($this->htmlmsg), 1, 'attribute'));
 						//exit;
@@ -291,15 +288,13 @@ class ImapAbuseCheck
 					echo "{$this->imap_folder} Invalid IP {$ip} or not ours in Message Headers:" . json_encode(explode("\n", $headers)). "".PHP_EOL;
 				}
 				//echo "OVERVIEW:" . $overview->msgno . " " . $overview->subject . " " . $overview->date . "\nBODY:$body\n";
-				if ($this->delete_attachments == 1) {
+				if ($this->delete_attachments == 1)
 					imap_delete($this->mbox, $overview->msgno);
-				}
 			}
 			$GLOBALS['abuse_ips'] = $this->ips;
 		}
-		if ($this->delete_attachments == 1) {
+		if ($this->delete_attachments == 1)
 			$this->delete_messages();
-		}
 		$this->disconnect();
 	}
 
@@ -467,9 +462,8 @@ class ImapAbuseCheck
 		if ($folders == false) {
 			echo "Call failed<br />\n";
 		} else {
-			foreach ($folders as $val) {
+			foreach ($folders as $val)
 				echo $val . "<br />".PHP_EOL;
-			}
 		}
 	}
 
