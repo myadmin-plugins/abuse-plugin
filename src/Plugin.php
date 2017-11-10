@@ -40,8 +40,8 @@ class Plugin {
 		$menu = $event->getSubject();
 		if ($GLOBALS['tf']->ima == 'admin') {
 			function_requirements('has_acl');
-					if (has_acl('client_billing'))
-							$menu->add_link('admin', 'choice=none.abuse_admin', '/bower_components/webhostinghub-glyphs-icons/icons/development-16/Black/icon-spam.png', 'Abuse');
+				if (has_acl('client_billing'))
+					$menu->add_link('admin', 'choice=none.abuse_admin', '/images/myadmin/spam-can.png', 'Abuse');
 		}
 	}
 
