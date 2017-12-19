@@ -272,7 +272,7 @@ class ImapAbuseCheck
 						//$email = 'john@interserver.net';
 						if (!isset($this->ips[$ip]))
 							$this->ips[$ip] = 0;
-						if ($this->limit_ips === false || ($this->ips[$ip] < $this->limit_ips)) {
+						if (($this->limit_ips === false || $this->ips[$ip] < $this->limit_ips) && !in_array($server_data['status'], ['canceled', 'expired'])) {
 							echo "{$this->imap_folder} Abuse Entry for {$ip} Added - Emailing {$email}".PHP_EOL;
 							mail($email, $subject, $message, $this->email_headers);
 						} else {
