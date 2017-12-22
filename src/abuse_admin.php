@@ -6,6 +6,7 @@
  * @package MyAdmin
  * @category Admin
  */
+
 /**
  * @return bool
  * @throws \Exception
@@ -226,53 +227,58 @@ div.tooltip {
 	//add_output(print_r($_FILES, TRUE));
 	//Array ( [import] => Array ( [name] => monitoring-19318.txt [type] => text/plain [tmp_name] => /tmp/phptWYULC [error] => 0 [size] => 3622 ) )
 	if (isset($_FILES['import']) && isset($_FILES['import']['tmp_name']) && verify_csrf('abuse_admin_uce')) {
-		add_output('Importing File<br>');
-		$lines = explode("\n", file_get_contents($_FILES['import']['tmp_name']));
-		for ($x = 0, $x_max = count($lines); $x < $x_max; $x++) {
-			if (mb_strpos($lines[$x], ',') !== FALSE && is_numeric(mb_substr($lines[$x], 0, 1))) {
-				$parts = explode(',', $lines[$x]);
-				$ip = $parts[0];
-				$date = new \DateTime(is_numeric($parts[1]) && mb_strlen($parts[1]) == 10 ? date(MYSQL_DATE_FORMAT, $parts[1]) : $parts[1]);
-				if (isset($GLOBALS['tf']->variables->request['dates']) && $GLOBALS['tf']->variables->request['dates'] != 'all' && is_numeric($GLOBALS['tf']->variables->request['dates'])) {
-					$limit_date = new \DateTime(date(MYSQL_DATE_FORMAT, time() - $GLOBALS['tf']->variables->request['dates']));
-					if ($date < $limit_date)
-						continue;
-				}
-				$date = $date->format(MYSQL_DATE_FORMAT);
-				$server_data = get_server_from_ip($ip);
-				if (isset($server_data['email']) && $server_data['email'] != '') {
-					$type = 'uceprotect';
-					$email = $server_data['email'];
-					$db->query(make_insert_query('abuse', [
-						'abuse_id' => NULL,
-						'abuse_ip' => $ip,
-						'abuse_type' => $type,
-						'abuse_time' => $date,
-						'abuse_amount' => 1,
-						'abuse_headers' => '',
-						'abuse_lid' => $email,
-						'abuse_status' => 'pending'
-														]
-							   ), __LINE__, __FILE__);
-					$id = $db->getLastInsertId('abuse', 'abuse_id');
-					$subject = 'InterServer Abuse Report for '.$ip;
-					$message = str_replace(
-						['{$email}', '{$ip}', '{$type}', '{$count}', '{$id}', '{$key}'],
-						[$server_data['email_abuse'], $ip, $type, 1, $id, md5($id . $ip . $type)],
-						$email_template);
-					mail($server_data['email_abuse'], $subject, $message, $headers);
-					//mail('john@interserver.net', $subject, $message, $headers);
-					//$mailed++;
-					//if ($mailed > $maxmailed)
-					//{
-					//  add_output($maxmailed.' Reached, Bailing');
-					//  return false;
-					//}
-					add_output('Abuse Entry for '.$ip.' Added - Emailing '.($server_data['email_abuse'] != $email ? $server_data['email_abuse'].' (for client '.$email.')' : $server_data['email_abuse']).'<br>');
-				} else {
-					add_output('Error Finding Owner For '.$ip.'<br>');
+		if (strlen($_FILES['import']['tmp_name']) > 1 && file_exists($_FILES['import']['tmp_name'])) {
+			add_output('Importing File<br>');
+			$lines = explode("\n", file_get_contents($_FILES['import']['tmp_name']));
+			for ($x = 0, $x_max = count($lines); $x < $x_max; $x++) {
+				if (mb_strpos($lines[$x], ',') !== FALSE && is_numeric(mb_substr($lines[$x], 0, 1))) {
+					$parts = explode(',', $lines[$x]);
+					$ip = $parts[0];
+					$date = new \DateTime(is_numeric($parts[1]) && mb_strlen($parts[1]) == 10 ? date(MYSQL_DATE_FORMAT, $parts[1]) : $parts[1]);
+					if (isset($GLOBALS['tf']->variables->request['dates']) && $GLOBALS['tf']->variables->request['dates'] != 'all' && is_numeric($GLOBALS['tf']->variables->request['dates'])) {
+						$limit_date = new \DateTime(date(MYSQL_DATE_FORMAT, time() - $GLOBALS['tf']->variables->request['dates']));
+						if ($date < $limit_date)
+							continue;
+					}
+					$date = $date->format(MYSQL_DATE_FORMAT);
+					$server_data = get_server_from_ip($ip);
+					if (isset($server_data['email']) && $server_data['email'] != '') {
+						$type = 'uceprotect';
+						$email = $server_data['email'];
+						$db->query(make_insert_query('abuse', [
+							'abuse_id' => NULL,
+							'abuse_ip' => $ip,
+							'abuse_type' => $type,
+							'abuse_time' => $date,
+							'abuse_amount' => 1,
+							'abuse_headers' => '',
+							'abuse_lid' => $email,
+							'abuse_status' => 'pending'
+															]
+								   ), __LINE__, __FILE__);
+						$id = $db->getLastInsertId('abuse', 'abuse_id');
+						$subject = 'InterServer Abuse Report for '.$ip;
+						$message = str_replace(
+							['{$email}', '{$ip}', '{$type}', '{$count}', '{$id}', '{$key}'],
+							[$server_data['email_abuse'], $ip, $type, 1, $id, md5($id . $ip . $type)],
+							$email_template);
+						mail($server_data['email_abuse'], $subject, $message, $headers);
+						//mail('john@interserver.net', $subject, $message, $headers);
+						//$mailed++;
+						//if ($mailed > $maxmailed)
+						//{
+						//  add_output($maxmailed.' Reached, Bailing');
+						//  return false;
+						//}
+						add_output('Abuse Entry for '.$ip.' Added - Emailing '.($server_data['email_abuse'] != $email ? $server_data['email_abuse'].' (for client '.$email.')' : $server_data['email_abuse']).'<br>');
+					} else {
+						add_output('Error Finding Owner For '.$ip.'<br>');
+					}
 				}
 			}
+		} else {
+			add_output('There was an error with the uploaded file, specificly the tmp filename was empty or non existant.<br>');
+			add_output('<pre style="text-align: left;">$_FILES = '.var_export($_FILES, true).';</pre>');
 		}
 	}
 	if (isset($GLOBALS['tf']->variables->request['csvtext']) && $GLOBALS['tf']->variables->request['csvtext'] != '' && verify_csrf('abuse_admin_uce')) {
