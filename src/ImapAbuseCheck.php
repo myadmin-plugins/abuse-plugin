@@ -206,7 +206,7 @@ class ImapAbuseCheck
 							$ip = trim($matches[$match_data['field']]);
 					} else {
 						//print_r($match_res);
-						//echo "{$this->imap_folder} Couldn't Find IP in " . $match_data['against'] . ":\n			" . str_replace("\n", "\n			", $match_against) . "\nUsing " . $match_data['regex'] . "\n";
+						//echo "{$this->imap_folder} Couldn't Find IP in " . $match_data['against'] . ":\n			" . str_replace("\n", "\n			", $match_against) . "\nUsing " . $match_data['regex'].PHP_EOL;
 					}
 				}
 				foreach ($this->preg_match_all as $match_data) {
@@ -226,7 +226,7 @@ class ImapAbuseCheck
 						}
 					} else {
 						//print_r($match_res);
-						//echo "{$this->imap_folder} Couldn't Find IP in {$match_data['against']}:\n	" . str_replace("\n", "\n	", $match_against) . "\nUsing " . $match_data['regex'] . "\n";
+						//echo "{$this->imap_folder} Couldn't Find IP in {$match_data['against']}:\n	" . str_replace("\n", "\n	", $match_against) . "\nUsing " . $match_data['regex'].PHP_EOL;
 					}
 				}
 				if ($ip !== false && validIp($ip, FALSE) && (in_array($ip, $this->all_ips) || in_array($ip, $this->client_ips))) {
@@ -439,7 +439,7 @@ class ImapAbuseCheck
 				echo $val->attributes . "<br />\n";
 			}
 		} else {
-			echo 'imap_getmailboxes failed: '.imap_last_error() . "\n";
+			echo 'imap_getmailboxes failed: '.imap_last_error().PHP_EOL;
 		}
 	}
 
