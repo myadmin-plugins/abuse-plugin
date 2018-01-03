@@ -88,7 +88,7 @@ function abuse_admin() {
 
 	if (isset($lid)) {
 
-		$db->query("select * from abuse where abuse_lid='$lid'");
+		$db->query("select * from abuse where abuse_lid='{$lid}'");
 		$rows = [];
 		while ($db->next_record(MYSQL_ASSOC)) {
 			unset($db->Record['abuse_lid']);

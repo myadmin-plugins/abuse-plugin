@@ -266,7 +266,7 @@ class ImapAbuseCheck
 						$id = $db->getLastInsertId('abuse', 'abuse_id');
 						$email_template = file_get_contents(__DIR__.'/templates/abuse.tpl');
 						$message = str_replace(
-							['$email', '$ip', '$type', '$count', '$id', '$key'],
+							['{$email}', '{$ip}', '{$type}', '{$count}', '{$id}', '{$key}'],
 							[$email, $ip, 'spam', 1, $id, md5("${id}${ip}${type}")],
 							$email_template);
 						//$email = 'john@interserver.net';
