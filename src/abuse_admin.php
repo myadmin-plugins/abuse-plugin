@@ -46,7 +46,7 @@ function abuse_admin() {
 		$table = new \TFTable;
 		$table->set_col_options('style="vertical-align: middle; padding-top: 1px; padding-right: 3px;"');
 		if (isset($lid_data['picture']) && NULL !== $lid_data['picture'] && $lid_data['picture'] != '')
-			$table->set_title('<span style="float: left;"><img src="'.htmlentities($lid_data['picture'], ENT_QUOTES, 'UTF-8').'" width="20" height="20" alt="" style="padding-left: 5px;"> Customer:</span>');
+			$table->set_title('<span style="float: left;"><img src="'.htmlentities($lid_data['picture'], ENT_QUOTES, 'UTF-8').'" width="20" height="20" style="padding-left: 5px;"> Customer:</span>');
 		else
 			$table->set_title('<span style="float: left;"><span class="glyphicon glyphicon-user " style="padding-left: 5px;"></span> Customer:</span>');
 		$table->set_col_options('style="vertical-align: middle; padding-top: 1px; padding-right: 3px;"');
@@ -74,7 +74,7 @@ function abuse_admin() {
 				$table->add_field($table->make_link('choice=none.abuse&lid='.$db->Record['abuse_lid'], $db->Record['abuse_lid']), 'r');
 				$table->set_col_options('style="vertical-align: middle; padding-top: 1px; padding-right: 3px;"');
 				if (isset($db->Record['account_value']) && NULL !== $db->Record['account_value'] && $db->Record['account_value'] != '')
-					$table->add_field($table->make_link('choice=none.edit_customer3&custid='.$db->Record['account_id'], '<img src="'.htmlentities($db->Record['account_value'], ENT_QUOTES, 'UTF-8').'" width="20" height="20" alt="">'), 'l');
+					$table->add_field($table->make_link('choice=none.edit_customer3&custid='.$db->Record['account_id'], '<img src="'.htmlentities($db->Record['account_value'], ENT_QUOTES, 'UTF-8').'" width="20" height="20">'), 'l');
 				else
 					$table->add_field($table->make_link('choice=none.edit_customer3&custid='.$db->Record['account_id'], '<span class="glyphicon glyphicon-user "></span>'), 'l');
 			}
