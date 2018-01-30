@@ -2,7 +2,7 @@ Hello {$email},<br>
 <br>
 InterServer has received an abuse complaint regarding your IP address {$ip}.<br>
 Type of Abuse: {$type}<br>
-Amount of complaints: $count<br>
+Amount of complaints: {$count}<br>
 <br>
 Abuse complaints are now stored in <a href="https://my.interserver.net">https://my.interserver.net</a> to instead of attached or inline in a email to prevent forwarded complaints from being blocked by spam filters.<br>
 <br>
