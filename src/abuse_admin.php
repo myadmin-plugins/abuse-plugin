@@ -18,8 +18,6 @@ function abuse_admin() {
 	add_js('bootstrap');
 	$module = get_module_name('default');
 	$db = get_module_db($module);
-	$GLOBALS['tf']->accounts->set_db_module($module);
-	$GLOBALS['tf']->history->set_db_module($module);
 	$mailed = 0;
 	$maxmailed = 5;
 	$limit = 'limit 20';
@@ -58,10 +56,11 @@ function abuse_admin() {
 	}
 	$table_orig = new \TFTable;
 	foreach ($times as $time) {
+		$min_date = mysql_date_sub(null, 'INTERVAL 24 HOUR');
 		if (isset($lid))
-			$query = "select distinct abuse_ip, sum(abuse_amount) as total_amount, abuse_lid, accounts.account_id, account_value from abuse left join accounts on abuse_lid=account_lid left join accounts_ext on accounts.account_id=accounts_ext.account_id and account_key='picture' where abuse_lid='{$lid}' and abuse_time >= date_sub(now(), INTERVAL {$time}) group by abuse_ip order by sum(abuse_amount) desc {$limit};";
+			$query = "select accounts.account_id, abuse_lid, account_value, abuse_ip, sum(abuse_amount) as total_amount from abuse left join accounts on account_lid=abuse_lid left join accounts_ext on accounts_ext.account_id=accounts.account_id and account_key='picture' where abuse_lid='{$lid}' and abuse_time between date_sub(now(), INTERVAL 24 HOUR) and now() group by abuse_lid, abuse_ip order by sum(abuse_amount) desc {$limit};";
 		else
-			$query = "select distinct abuse_ip, sum(abuse_amount) as total_amount, abuse_lid, accounts.account_id, account_value from abuse left join accounts on abuse_lid=account_lid left join accounts_ext on accounts.account_id=accounts_ext.account_id and account_key='picture' where accounts.account_id is not null and abuse_time >= date_sub(now(), INTERVAL {$time}) group by abuse_ip order by sum(abuse_amount) desc {$limit};";
+			$query = "select accounts.account_id, abuse_lid, account_value, abuse_ip, sum(abuse_amount) as total_amount from abuse left join accounts on account_lid=abuse_lid left join accounts_ext on accounts_ext.account_id=accounts.account_id and account_key='picture' where abuse_time between date_sub(now(), INTERVAL 24 HOUR) and now() group by abuse_lid, abuse_ip order by sum(abuse_amount) desc {$limit};";
 		$db->query($query, __LINE__, __FILE__);
 		$table = clone $table_orig;
 		$table->set_title($time.' Spam Stats');
@@ -77,7 +76,7 @@ function abuse_admin() {
 				if (isset($db->Record['account_value']) && NULL !== $db->Record['account_value'] && $db->Record['account_value'] != '')
 					$table->add_field($table->make_link('choice=none.edit_customer3&custid='.$db->Record['account_id'], '<img src="'.htmlentities($db->Record['account_value'], ENT_QUOTES, 'UTF-8').'" width="20" height="20">'), 'l');
 				else
-					$table->add_field($table->make_link('choice=none.edit_customer3&custid='.$db->Record['account_id'], '<span class="glyphicon glyphicon-user "></span>'), 'l');
+					$table->add_field($table->make_link('choice=none.edit_customer3&custid='.$db->Record['account_id'], '<img src="'.get_gravatar($db->Record['abuse_lid'], 20, 'retro', 'x').'" width="20" height="20">'), 'l');
 			}
 			$table->add_row();
 		}
