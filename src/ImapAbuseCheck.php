@@ -258,7 +258,7 @@ class ImapAbuseCheck
 							'abuse_ip' => $ip,
 							'abuse_type' => $type,
 							'abuse_amount' => 1,
-							'abuse_headers' => $subject.'<br>'.$this->plainmsg . $this->htmlmsg,
+							'abuse_headers' => fix_headers($subject.'<br>'.$this->plainmsg . $this->htmlmsg),
 							'abuse_lid' => $email,
 							'abuse_status' => 'pending'
 															]
@@ -465,6 +465,29 @@ class ImapAbuseCheck
 			foreach ($folders as $val)
 				echo $val . "<br />".PHP_EOL;
 		}
+	}
+
+	public static function fix_headers($headers) {
+		$out = '';
+		$state = 0;
+		$headers = false;
+		$lines = explode("\n", trim(str_replace("\r",'',$headers)));
+		foreach ($lines as $line)
+			if ($state == 0) {
+				$out .= $line.PHP_EOL;
+				if (trim($line) == '')
+					$state++;
+			} elseif ($state == 1)
+				if (preg_match('/^[A-Z][a-zA-Z0-9\-]*: /', trim($line))) {
+					$headers = true;
+					$out .= $line.PHP_EOL;
+					$state--;
+				} elseif ($headers == true && trim($line) != '') {
+					$state++;
+				} elseif ($headers == false)
+					$out .= $line.PHP_EOL;
+		$out = preg_replace("/\n\s*\n/m", "\n", strip_tags($out));
+		return $out;
 	}
 
 }

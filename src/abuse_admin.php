@@ -14,6 +14,7 @@
  */
 function abuse_admin() {
 	function_requirements('get_server_from_ip');
+	function_requirements('class.ImapAbuseCheck');
 	add_js('bootstrap');
 	$module = get_module_name('default');
 	$db = get_module_db($module);
@@ -158,7 +159,7 @@ div.tooltip {
 					'abuse_ip' => $ip,
 					'abuse_type' => $GLOBALS['tf']->variables->request['type'],
 					'abuse_amount' => $GLOBALS['tf']->variables->request['amount'],
-					'abuse_headers' => $GLOBALS['tf']->variables->request['headers'],
+					'abuse_headers' => ImapAbuseCheck::fix_headers($GLOBALS['tf']->variables->request['headers']),
 					'abuse_lid' => $email,
 					'abuse_status' => 'pending'
 													]
@@ -197,7 +198,7 @@ div.tooltip {
 						'abuse_ip' => $ip,
 						'abuse_type' => $GLOBALS['tf']->variables->request['type'],
 						'abuse_amount' => 1,
-						'abuse_headers' => $GLOBALS['tf']->variables->request['evidence'],
+						'abuse_headers' => ImapAbuseCheck::fix_headers($GLOBALS['tf']->variables->request['evidence']),
 						'abuse_lid' => $email,
 						'abuse_status' => 'pending'
 														]
