@@ -258,7 +258,7 @@ class ImapAbuseCheck
 							'abuse_ip' => $ip,
 							'abuse_type' => $type,
 							'abuse_amount' => 1,
-							'abuse_headers' => fix_headers($subject.'<br>'.$this->plainmsg . $this->htmlmsg),
+							'abuse_headers' => self::fix_headers($subject.'<br>'.$this->plainmsg . $this->htmlmsg),
 							'abuse_lid' => $email,
 							'abuse_status' => 'pending'
 															]
