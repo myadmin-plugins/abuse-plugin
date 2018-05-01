@@ -20,7 +20,6 @@ function abuse() {
 	abuse_ip varchar(255) NOT NULL,
 	abuse_type varchar(255) NOT NULL,
 	abuse_amount int(11) UNSIGNED NOT NULL,
-	abuse_headers text DEFAULT NULL,
 	PRIMARY KEY (abuse_id),
 	UNIQUE INDEX abuse_ip (abuse_ip)
 	)
@@ -68,20 +67,20 @@ jQuery(document).ready(function() {
 		page_title('Manage Abuse Complaints');
 		if (isset($GLOBALS['tf']->variables->request['id'])) {
 			$id = (int)$GLOBALS['tf']->variables->request['id'];
-			$db->query("select * from abuse where abuse_id=$id");
+			$db->query("select * from abuse left join abuse_data using (abuse_id) where abuse_id=$id");
 			if ($db->num_rows() > 0) {
 				$db->next_record(MYSQL_ASSOC);
 				$ip = $db->Record['abuse_ip'];
 				$server_data = get_server_from_ip($ip);
 				if (($logged_in && $GLOBALS['tf']->accounts->data['account_lid'] == $server_data['email']) || ($logged_in && $GLOBALS['tf']->accounts->data['account_lid'] == $db->Record['abuse_lid']) || ($logged_in == FALSE) || ($GLOBALS['tf']->ima == 'admin')) {
 					if (isset($GLOBALS['tf']->variables->request['response'])) {
-						$db->query("update abuse set abuse_status='" . $db->real_escape($GLOBALS['tf']->variables->request['response_status']) . "', abuse_response='" . $db->real_escape($GLOBALS['tf']->variables->request['response']) .	"' where abuse_id=$id", __LINE__, __FILE__);
-						$db->query("select * from abuse where abuse_id=$id");
+						$db->query("update abuse set abuse_status='" . $db->real_escape($GLOBALS['tf']->variables->request['response_status']) . "' where abuse_id={$id}", __LINE__, __FILE__);
+						$db->query("update abuse_data set abuse_response='" . $db->real_escape($GLOBALS['tf']->variables->request['response']) .	"' where abuse_id={$id}", __LINE__, __FILE__);
+						$db->query("select * from abuse where abuse_id={$id}");
 						$db->next_record(MYSQL_ASSOC);
 						add_output('Abuse Entry Updated <a href="'.$GLOBALS['tf']->link('index.php', 'choice=none.abuse').'">View Pending Abuse Complaints</a>');
 					}
 					$table = new \TFTable;
-					//$table->add_hidden('id', $id);
 					$table->set_post_location('abuse.php?id='.$id . ($logged_in === TRUE || !isset($key) ? '' : '&key='.$key));
 					$table->set_options('cellpadding=3 id="abusetable"');
 					$table->set_title('Manage Abuse Complaint');
@@ -114,17 +113,7 @@ jQuery(document).ready(function() {
 					}
 					$table->set_row_options('style="vertical-align: top;"');
 					$table->add_field('Status', 'l');
-					$table->add_field(make_select('response_status', [
-						'resolved',
-						'notspam',
-						'notabuse',
-						'pending'
-					], [
-						'Resolved',
-						'Not Spam',
-						'Not Abuse',
-						'Pending'
-												  ], $db->Record['abuse_status']), 'l');
+					$table->add_field(make_select('response_status', ['resolved','notspam','notabuse','pending'], ['Resolved','Not Spam','Not Abuse','Pending'], $db->Record['abuse_status']), 'l');
 					$table->add_row();
 					$table->set_row_options('style="vertical-align: top;"');
 					$table->add_field('Response', 'l');

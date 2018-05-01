@@ -258,12 +258,14 @@ class ImapAbuseCheck
 							'abuse_ip' => $ip,
 							'abuse_type' => $type,
 							'abuse_amount' => 1,
-							'abuse_headers' => self::fix_headers($subject.'<br>'.$this->plainmsg . $this->htmlmsg),
 							'abuse_lid' => $email,
 							'abuse_status' => 'pending'
-															]
-								   ), __LINE__, __FILE__);
+						]), __LINE__, __FILE__);
 						$id = $db->getLastInsertId('abuse', 'abuse_id');
+						$db->query(make_insert_query('abuse', [
+							'abuse_id' => $id,
+							'abuse_headers' => self::fix_headers($subject.'<br>'.$this->plainmsg . $this->htmlmsg),
+						]), __LINE__, __FILE__);
 						$email_template = file_get_contents(__DIR__.'/templates/abuse.tpl');
 						$message = str_replace(
 							['{$email}', '{$ip}', '{$type}', '{$count}', '{$id}', '{$key}'],

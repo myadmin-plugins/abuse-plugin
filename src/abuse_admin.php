@@ -88,7 +88,7 @@ function abuse_admin() {
 
 	if (isset($lid)) {
 
-		$db->query("select * from abuse where abuse_lid='{$lid}'");
+		$db->query("select * from abuse left join abuse_data using (abuse_id) where abuse_lid='{$lid}'");
 		$rows = [];
 		while ($db->next_record(MYSQL_ASSOC)) {
 			unset($db->Record['abuse_lid']);
@@ -158,12 +158,14 @@ div.tooltip {
 					'abuse_ip' => $ip,
 					'abuse_type' => $GLOBALS['tf']->variables->request['type'],
 					'abuse_amount' => $GLOBALS['tf']->variables->request['amount'],
-					'abuse_headers' => ImapAbuseCheck::fix_headers($GLOBALS['tf']->variables->request['headers']),
 					'abuse_lid' => $email,
 					'abuse_status' => 'pending'
-													]
-						   ), __LINE__, __FILE__);
+				]), __LINE__, __FILE__);
 				$id = $db->getLastInsertId('abuse', 'abuse_id');
+				$db->query(make_insert_query('abuse', [
+					'abuse_id' => $id,
+					'abuse_headers' => ImapAbuseCheck::fix_headers($GLOBALS['tf']->variables->request['headers']),
+				]), __LINE__, __FILE__);
 				$subject = 'InterServer Abuse Report for '.$ip;
 				$message = str_replace(
 					['{$email}', '{$ip}', '{$type}', '{$count}', '{$id}', '{$key}'],
@@ -197,12 +199,14 @@ div.tooltip {
 						'abuse_ip' => $ip,
 						'abuse_type' => $GLOBALS['tf']->variables->request['type'],
 						'abuse_amount' => 1,
-						'abuse_headers' => ImapAbuseCheck::fix_headers($GLOBALS['tf']->variables->request['evidence']),
 						'abuse_lid' => $email,
 						'abuse_status' => 'pending'
-														]
-							   ), __LINE__, __FILE__);
+					]), __LINE__, __FILE__);
 					$id = $db->getLastInsertId('abuse', 'abuse_id');
+					$db->query(make_insert_query('abuse', [
+						'abuse_id' => $id,
+						'abuse_headers' => ImapAbuseCheck::fix_headers($GLOBALS['tf']->variables->request['headers']),
+					]), __LINE__, __FILE__);
 					$subject = 'InterServer Abuse Report for '.$ip;
 					$message = str_replace(
 						['{$email}', '{$ip}', '{$type}', '{$count}', '{$id}', '{$key}'],
@@ -251,11 +255,9 @@ div.tooltip {
 							'abuse_type' => $type,
 							'abuse_time' => $date,
 							'abuse_amount' => 1,
-							'abuse_headers' => '',
 							'abuse_lid' => $email,
 							'abuse_status' => 'pending'
-															]
-								   ), __LINE__, __FILE__);
+						]), __LINE__, __FILE__);
 						$id = $db->getLastInsertId('abuse', 'abuse_id');
 						$subject = 'InterServer Abuse Report for '.$ip;
 						$message = str_replace(
@@ -300,11 +302,9 @@ div.tooltip {
 						'abuse_type' => 'uceprotect',
 						'abuse_time' => $date,
 						'abuse_amount' => 1,
-						'abuse_headers' => '',
 						'abuse_lid' => $email,
 						'abuse_status' => 'pending'
-														]
-							   ), __LINE__, __FILE__);
+					]), __LINE__, __FILE__);
 					$id = $db->getLastInsertId('abuse', 'abuse_id');
 					$subject = 'InterServer Abuse Report for '.$ip;
 					$message = str_replace(
@@ -344,12 +344,14 @@ div.tooltip {
 						'abuse_type' => $type,
 						'abuse_time' => ['now()'],
 						'abuse_amount' => 1,
-						'abuse_headers' => '',
 						'abuse_lid' => $email,
 						'abuse_status' => 'pending'
-														]
-							   ), __LINE__, __FILE__);
+					]), __LINE__, __FILE__);
 					$id = $db->getLastInsertId('abuse', 'abuse_id');
+					$db->query(make_insert_query('abuse', [
+						'abuse_id' => $id,
+						'abuse_headers' => ImapAbuseCheck::fix_headers($GLOBALS['tf']->variables->request['headers']),
+					]), __LINE__, __FILE__);
 					$subject = 'InterServer Abuse Report for '.$ip;
 					$message = str_replace(
 						['{$email}', '{$ip}', '{$type}', '{$count}', '{$id}', '{$key}'],
