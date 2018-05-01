@@ -162,7 +162,7 @@ div.tooltip {
 					'abuse_status' => 'pending'
 				]), __LINE__, __FILE__);
 				$id = $db->getLastInsertId('abuse', 'abuse_id');
-				$db->query(make_insert_query('abuse', [
+				$db->query(make_insert_query('abuse_data', [
 					'abuse_id' => $id,
 					'abuse_headers' => ImapAbuseCheck::fix_headers($GLOBALS['tf']->variables->request['headers']),
 				]), __LINE__, __FILE__);
@@ -203,7 +203,7 @@ div.tooltip {
 						'abuse_status' => 'pending'
 					]), __LINE__, __FILE__);
 					$id = $db->getLastInsertId('abuse', 'abuse_id');
-					$db->query(make_insert_query('abuse', [
+					$db->query(make_insert_query('abuse_data', [
 						'abuse_id' => $id,
 						'abuse_headers' => ImapAbuseCheck::fix_headers($GLOBALS['tf']->variables->request['headers']),
 					]), __LINE__, __FILE__);
@@ -348,7 +348,7 @@ div.tooltip {
 						'abuse_status' => 'pending'
 					]), __LINE__, __FILE__);
 					$id = $db->getLastInsertId('abuse', 'abuse_id');
-					$db->query(make_insert_query('abuse', [
+					$db->query(make_insert_query('abuse_data', [
 						'abuse_id' => $id,
 						'abuse_headers' => ImapAbuseCheck::fix_headers($GLOBALS['tf']->variables->request['headers']),
 					]), __LINE__, __FILE__);
