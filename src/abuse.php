@@ -47,6 +47,7 @@ function abuse() {
 		$logged_in = TRUE;
 		$continue = TRUE;
 		$GLOBALS['tf']->accounts->data = $GLOBALS['tf']->accounts->read($GLOBALS['tf']->session->account_id);
+		$GLOBALS['tf']->ima = $GLOBALS['tf']->accounts->data['ima'];
 	}
 	if ($continue !== TRUE) {
 		add_output('Invalid Authentication, Please Login first or use the URL given in the email.');
@@ -57,7 +58,6 @@ function abuse() {
 		function_requirements('abuse_admin');
 		abuse_admin();
 	} else {
-		add_output('Login Not Required<br>');
 		add_output('<script type="text/javascript">
 jQuery(document).ready(function() {
 	$("html, body").animate({ scrollTop: $("#abusetable").offset().top }, 1000);
@@ -75,7 +75,7 @@ jQuery(document).ready(function() {
 				if (($logged_in && $GLOBALS['tf']->accounts->data['account_lid'] == $server_data['email']) || ($logged_in && $GLOBALS['tf']->accounts->data['account_lid'] == $db->Record['abuse_lid']) || ($logged_in == FALSE) || ($GLOBALS['tf']->ima == 'admin')) {
 					if (isset($GLOBALS['tf']->variables->request['response'])) {
 						$db->query("update abuse set abuse_status='" . $db->real_escape($GLOBALS['tf']->variables->request['response_status']) . "' where abuse_id={$id}", __LINE__, __FILE__);
-						$db->query("update abuse_data set abuse_response='" . $db->real_escape($GLOBALS['tf']->variables->request['response']) .	"' where abuse_id={$id}", __LINE__, __FILE__);
+						$db->query("update abuse_data set abuse_response='" . $db->real_escape($GLOBALS['tf']->variables->request['response']) . "' where abuse_id={$id}", __LINE__, __FILE__);
 						$db->query("select * from abuse where abuse_id={$id}");
 						$db->next_record(MYSQL_ASSOC);
 						add_output('Abuse Entry Updated <a href="'.$GLOBALS['tf']->link('index.php', 'choice=none.abuse').'">View Pending Abuse Complaints</a>');
