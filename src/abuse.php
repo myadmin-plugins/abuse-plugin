@@ -58,6 +58,7 @@ function abuse() {
 		function_requirements('abuse_admin');
 		abuse_admin();
 	} else {
+		$smarty = new TFSmarty();
 		add_output('<script type="text/javascript">
 jQuery(document).ready(function() {
 	$("html, body").animate({ scrollTop: $("#abusetable").offset().top }, 1000);
@@ -80,6 +81,8 @@ jQuery(document).ready(function() {
 						$db->next_record(MYSQL_ASSOC);
 						add_output('Abuse Entry Updated <a href="'.$GLOBALS['tf']->link('index.php', 'choice=none.abuse').'">View Pending Abuse Complaints</a>');
 					}
+					$smarty->assign($db->Record);
+					//add_output($smarty->fetch('abuse.tpl'));
 					$table = new \TFTable;
 					$table->set_post_location('abuse.php?id='.$id . ($logged_in === TRUE || !isset($key) ? '' : '&key='.$key));
 					$table->set_options('cellpadding=3 id="abusetable"');
