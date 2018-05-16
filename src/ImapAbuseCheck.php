@@ -266,7 +266,7 @@ class ImapAbuseCheck
 						$id = $abuse->getId();
 						$abuseData = new Abuse_Data($db);
 						$abuseData->setId($id)
-							->setHeaders(self::fix_headers($this->plainmsg.$this->htmlmsg))
+							->setHeaders(trim(self::fix_headers($this->plainmsg.$this->htmlmsg)))
 							->setPlainmsg($this->plainmsg)
 							->setHtmlmsg($this->htmlmsg)
 							->save();
