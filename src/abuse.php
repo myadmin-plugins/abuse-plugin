@@ -82,50 +82,9 @@ jQuery(document).ready(function() {
 						add_output('Abuse Entry Updated <a href="'.$GLOBALS['tf']->link('index.php', 'choice=none.abuse').'">View Pending Abuse Complaints</a>');
 					}
 					$smarty->assign($db->Record);
-					//add_output($smarty->fetch('abuse.tpl'));
-					$table = new \TFTable;
-					$table->set_post_location('abuse.php?id='.$id . ($logged_in === TRUE || !isset($key) ? '' : '&key='.$key));
-					$table->set_options('cellpadding=3 id="abusetable"');
-					$table->set_title('Manage Abuse Complaint');
-					$table->set_row_options('style="vertical-align: top;"');
-					$table->add_field('IP', 'l');
-					$table->add_field($ip, 'l');
-					$table->add_row();
-					$table->set_row_options('style="vertical-align: top;"');
-					$table->add_field('Date', 'l');
-					$table->add_field($db->Record['abuse_time'], 'l');
-					$table->add_row();
-					$table->set_row_options('style="vertical-align: top;"');
-					$table->add_field('Amount', 'l');
-					$table->add_field($db->Record['abuse_amount'], 'l');
-					$table->add_row();
-					$table->set_row_options('style="vertical-align: top;"');
-					$table->add_field('Type', 'l');
-					$table->add_field($db->Record['abuse_type'], 'l');
-					$table->add_row();
-					$table->set_row_options('style="vertical-align: top;"');
-					if ($db->Record['abuse_type'] == 'uceprotect') {
-						$table->add_field('uceprotect', 'l');
-						$table->add_field('<a href="http://www.uceprotect.net/en/rblcheck.php?ipr='.$ip.'" target="_blank">http://www.uceprotect.net/en/rblcheck.php?ipr='.$ip.'</a>', 'l');
-						$table->add_row();
-					} else {
-						$table->set_col_options('style="vertical-align: top;"');
-						$table->add_field('Headers', 'l');
-						$table->add_field('<div style="max-width: 1000px; min-width: 500px; font-size: 0.9em; white-space: pre; font-family: monospace; display: block; overflow: scroll;">'.htmlspecial($db->Record['abuse_headers']).'</div>', 'l');
-						$table->add_row();
-					}
-					$table->set_row_options('style="vertical-align: top;"');
-					$table->add_field('Status', 'l');
-					$table->add_field(make_select('response_status', ['resolved','notspam','notabuse','pending'], ['Resolved','Not Spam','Not Abuse','Pending'], $db->Record['abuse_status']), 'l');
-					$table->add_row();
-					$table->set_row_options('style="vertical-align: top;"');
-					$table->add_field('Response', 'l');
-					$table->add_field('<textarea name="response" rows=10 cols=50>'.$db->Record['abuse_response'].'</textarea>', 'l');
-					$table->add_row();
-					$table->add_field('', 'l');
-					$table->add_field($table->make_submit('Submit Response'), 'l');
-					$table->add_row();
-					add_output($table->get_table());
+					$smarty->assign('post_location', 'abuse.php?id='.$id . ($logged_in === TRUE || !isset($key) ? '' : '&key='.$key));
+					$smarty->assign('response_status', make_select('response_status', ['resolved','notspam','notabuse','pending'], ['Resolved','Not Spam','Not Abuse','Pending'], $db->Record['abuse_status']));
+					add_output($smarty->fetch('abuse.tpl'));
 				} else {
 					$eparts = explode('@', $server_data['email']);
 					$anonemail = mb_substr($eparts[0], 0, 1);
