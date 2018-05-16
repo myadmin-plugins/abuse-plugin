@@ -7,6 +7,9 @@
  * @category Abuse
  */
 
+use MyAdmin\Orm\Abuse;
+use MyAdmin\Orm\Abuse_Data;
+
 /**
  * Handles checking IMAP email addresses looking through the emails for specific patterns indicating
  * that an IP was blacklisted or being reported for abuse.   it checks to see if the IP is one of ours,
@@ -252,20 +255,21 @@ class ImapAbuseCheck
 						//print_r(array('ip' => $ip, 'email' => $email, 'subject' => $subject, 'plainmsg' => $this->plainmsg, 'htmlmsg' => $this->htmlmsg));
 						//print_r(xml2array(trim($this->htmlmsg), 1, 'attribute'));
 						//exit;
-						$db->query(make_insert_query('abuse', [
-							'abuse_id' => null,
-							'abuse_time' => mysql_now(),
-							'abuse_ip' => $ip,
-							'abuse_type' => $type,
-							'abuse_amount' => 1,
-							'abuse_lid' => $email,
-							'abuse_status' => 'pending'
-						]), __LINE__, __FILE__);
-						$id = $db->getLastInsertId('abuse', 'abuse_id');
-						$db->query(make_insert_query('abuse_data', [
-							'abuse_id' => $id,
-							'abuse_headers' => self::fix_headers($subject.'<br>'.$this->plainmsg . $this->htmlmsg),
-						]), __LINE__, __FILE__);
+						$abuse = new Abuse($db);
+						$abuse->setTime(mysql_now())
+							->setIp($ip)
+							->setType($type)
+							->setAmount(1)
+							->setLid($email)
+							->setStatus('pending')
+							->save();
+						$id = $abuse->getId();
+						$abuseData = new Abuse_Data($db);
+						$abuseData->setId($id)
+							->setHeaders(self::fix_headers($this->plainmsg.$this->htmlmsg))
+							->setPlainmsg($this->plainmsg)
+							->setHtmlmsg($this->htmlmsg)
+							->save();
 						$email_template = file_get_contents(__DIR__.'/templates/abuse.tpl');
 						$message = str_replace(
 							['{$email}', '{$ip}', '{$type}', '{$count}', '{$id}', '{$key}'],
