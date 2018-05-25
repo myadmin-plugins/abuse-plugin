@@ -57,14 +57,14 @@ function abuse() {
 	if ($GLOBALS['tf']->ima == 'admin' && !isset($GLOBALS['tf']->variables->request['id'])) {
 		function_requirements('abuse_admin');
 		abuse_admin();
-	} else {
-		$smarty = new TFSmarty();
 		add_output('<script type="text/javascript">
 jQuery(document).ready(function() {
 	$("html, body").animate({ scrollTop: $("#abusetable").offset().top }, 1000);
 });
 </script>
 ');
+	} else {
+		$smarty = new TFSmarty();
 		page_title('Manage Abuse Complaints');
 		if (isset($GLOBALS['tf']->variables->request['id'])) {
 			$id = (int)$GLOBALS['tf']->variables->request['id'];
