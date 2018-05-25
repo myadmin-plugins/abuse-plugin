@@ -68,7 +68,7 @@ jQuery(document).ready(function() {
 		page_title('Manage Abuse Complaints');
 		if (isset($GLOBALS['tf']->variables->request['id'])) {
 			$id = (int)$GLOBALS['tf']->variables->request['id'];
-			$db->query("select * from abuse left join abuse_data using (abuse_id) where abuse_id=$id");
+			$db->query("select * from abuse left join abuse_data using (abuse_id) where abuse_id={$id}");
 			if ($db->num_rows() > 0) {
 				$db->next_record(MYSQL_ASSOC);
 				$ip = $db->Record['abuse_ip'];
@@ -77,7 +77,7 @@ jQuery(document).ready(function() {
 					if (isset($GLOBALS['tf']->variables->request['response'])) {
 						$db->query("update abuse set abuse_status='" . $db->real_escape($GLOBALS['tf']->variables->request['response_status']) . "' where abuse_id={$id}", __LINE__, __FILE__);
 						$db->query("update abuse_data set abuse_response='" . $db->real_escape($GLOBALS['tf']->variables->request['response']) . "' where abuse_id={$id}", __LINE__, __FILE__);
-						$db->query("select * from abuse where abuse_id={$id}");
+						$db->query("select * from abuse left join abuse_data using (abuse_id) where abuse_id={$id}");
 						$db->next_record(MYSQL_ASSOC);
 						add_output('Abuse Entry Updated <a href="'.$GLOBALS['tf']->link('index.php', 'choice=none.abuse').'">View Pending Abuse Complaints</a>');
 					}
