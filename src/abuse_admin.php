@@ -49,7 +49,7 @@ function abuse_admin() {
 		else
 			$table->set_title('<span style="float: left;"><span class="glyphicon glyphicon-user " style="padding-left: 5px;"></span> Customer:</span>');
 		$table->set_col_options('style="vertical-align: middle; padding-top: 1px; padding-right: 3px;"');
-		$table->add_field($table->make_link('choice=none.edit_customer3&custid='.$lid_data['account_id'], $lid), 'l');
+		$table->add_field($table->make_link('choice=none.edit_customer&custid='.$lid_data['account_id'], $lid), 'l');
 		$table->add_row();
 		$table2->set_col_options('style="vertical-align: top; padding-left: 5px; padding-right: 5px;"');
 		$table2->add_field($table->get_table());
@@ -74,9 +74,9 @@ function abuse_admin() {
 				$table->add_field($table->make_link('choice=none.abuse&lid='.$db->Record['abuse_lid'], $db->Record['abuse_lid']), 'r');
 				$table->set_col_options('style="vertical-align: middle; padding-top: 1px; padding-right: 3px;"');
 				if (isset($db->Record['account_value']) && NULL !== $db->Record['account_value'] && $db->Record['account_value'] != '')
-					$table->add_field($table->make_link('choice=none.edit_customer3&custid='.$db->Record['account_id'], '<img src="'.htmlentities($db->Record['account_value'], ENT_QUOTES, 'UTF-8').'" width="20" height="20">'), 'l');
+					$table->add_field($table->make_link('choice=none.edit_customer&custid='.$db->Record['account_id'], '<img src="'.htmlentities($db->Record['account_value'], ENT_QUOTES, 'UTF-8').'" width="20" height="20">'), 'l');
 				else
-					$table->add_field($table->make_link('choice=none.edit_customer3&custid='.$db->Record['account_id'], '<img src="'.get_gravatar($db->Record['abuse_lid'], 20, 'retro', 'x').'" width="20" height="20">'), 'l');
+					$table->add_field($table->make_link('choice=none.edit_customer&custid='.$db->Record['account_id'], '<img src="'.get_gravatar($db->Record['abuse_lid'], 20, 'retro', 'x').'" width="20" height="20">'), 'l');
 			}
 			$table->add_row();
 		}
