@@ -12,7 +12,8 @@
  * @throws \Exception
  * @throws \SmartyException
  */
-function abuse_admin() {
+function abuse_admin()
+{
 	function_requirements('get_server_from_ip');
 	function_requirements('class.ImapAbuseCheck');
 	add_js('bootstrap');
@@ -24,7 +25,7 @@ function abuse_admin() {
 	function_requirements('has_acl');
 	if ($GLOBALS['tf']->ima != 'admin' || !has_acl('client_billing')) {
 		dialog('Not admin', 'Not Admin or you lack the permissions to view this page.');
-		return FALSE;
+		return false;
 	}
 	page_title('Report Abuse');
 	$headers = get_default_mail_headers(['TITLE' => 'Abuse', 'EMAIL_FROM' => 'abuse@interserver.net']);
@@ -44,10 +45,11 @@ function abuse_admin() {
 		$lid_data = $GLOBALS['tf']->accounts->read($GLOBALS['tf']->accounts->cross_reference($lid));
 		$table = new \TFTable;
 		$table->set_col_options('style="vertical-align: middle; padding-top: 1px; padding-right: 3px;"');
-		if (isset($lid_data['picture']) && NULL !== $lid_data['picture'] && $lid_data['picture'] != '')
+		if (isset($lid_data['picture']) && null !== $lid_data['picture'] && $lid_data['picture'] != '') {
 			$table->set_title('<span style="float: left;"><img src="'.htmlentities($lid_data['picture'], ENT_QUOTES, 'UTF-8').'" width="20" height="20" style="padding-left: 5px;"> Customer:</span>');
-		else
+		} else {
 			$table->set_title('<span style="float: left;"><span class="glyphicon glyphicon-user " style="padding-left: 5px;"></span> Customer:</span>');
+		}
 		$table->set_col_options('style="vertical-align: middle; padding-top: 1px; padding-right: 3px;"');
 		$table->add_field($table->make_link('choice=none.edit_customer&custid='.$lid_data['account_id'], $lid), 'l');
 		$table->add_row();
@@ -57,10 +59,11 @@ function abuse_admin() {
 	$table_orig = new \TFTable;
 	foreach ($times as $time) {
 		$min_date = mysql_date_sub(null, 'INTERVAL 24 HOUR');
-		if (isset($lid))
+		if (isset($lid)) {
 			$query = "select accounts.account_id, abuse_lid, account_value, abuse_ip, sum(abuse_amount) as total_amount from abuse left join accounts on account_lid=abuse_lid left join accounts_ext on accounts_ext.account_id=accounts.account_id and account_key='picture' where abuse_lid='{$lid}' and abuse_time between date_sub(now(), INTERVAL 24 HOUR) and now() group by abuse_lid, abuse_ip order by sum(abuse_amount) desc {$limit};";
-		else
+		} else {
 			$query = "select accounts.account_id, abuse_lid, account_value, abuse_ip, sum(abuse_amount) as total_amount from abuse left join accounts on account_lid=abuse_lid left join accounts_ext on accounts_ext.account_id=accounts.account_id and account_key='picture' where abuse_time between date_sub(now(), INTERVAL 24 HOUR) and now() group by abuse_lid, abuse_ip order by sum(abuse_amount) desc {$limit};";
+		}
 		$db->query($query, __LINE__, __FILE__);
 		$table = clone $table_orig;
 		$table->set_title($time.' Spam Stats');
@@ -73,10 +76,11 @@ function abuse_admin() {
 				$table->set_col_options('style="vertical-align: middle; padding-top: 1px; padding-right: 3px;"');
 				$table->add_field($table->make_link('choice=none.abuse&lid='.$db->Record['abuse_lid'], $db->Record['abuse_lid']), 'r');
 				$table->set_col_options('style="vertical-align: middle; padding-top: 1px; padding-right: 3px;"');
-				if (isset($db->Record['account_value']) && NULL !== $db->Record['account_value'] && $db->Record['account_value'] != '')
+				if (isset($db->Record['account_value']) && null !== $db->Record['account_value'] && $db->Record['account_value'] != '') {
 					$table->add_field($table->make_link('choice=none.edit_customer&custid='.$db->Record['account_id'], '<img src="'.htmlentities($db->Record['account_value'], ENT_QUOTES, 'UTF-8').'" width="20" height="20">'), 'l');
-				else
+				} else {
 					$table->add_field($table->make_link('choice=none.edit_customer&custid='.$db->Record['account_id'], '<img src="'.get_gravatar($db->Record['abuse_lid'], 20, 'retro', 'x').'" width="20" height="20">'), 'l');
+				}
 			}
 			$table->add_row();
 		}
@@ -87,18 +91,18 @@ function abuse_admin() {
 	add_output($table2->get_table());
 
 	if (isset($lid)) {
-
 		$db->query("select * from abuse left join abuse_data using (abuse_id) where abuse_lid='{$lid}'");
 		$rows = [];
 		while ($db->next_record(MYSQL_ASSOC)) {
 			unset($db->Record['abuse_lid']);
 			if (!isset($header)) {
 				$header = array_keys($db->Record);
-				foreach ($header as $idx => $field)
+				foreach ($header as $idx => $field) {
 					$header[$idx] = ucwords(str_replace('abuse_', '', $field));
+				}
 			}
 			$headerlimit = 50;
-			$db->Record['abuse_headers'] = (mb_strlen($db->Record['abuse_headers']) <= $headerlimit ? $db->Record['abuse_headers'] : '<a href="'.$GLOBALS['tf']->link('index.php', 'choice=none.abuse&lid='.$lid.'&id='.$db->Record['abuse_id']).'" class="btn" data-toggle="popover" data-trigger="hover" data-placement="bottom" '.(stripos($db->Record['abuse_headers'], '<html>') === FALSE ? 'data-html="true" data-content="'.htmlentities(nl2br($db->Record['abuse_headers']), ENT_QUOTES, 'UTF-8').'"' : 'data-html="true" data-content="'.htmlentities($db->Record['abuse_headers'], ENT_QUOTES, 'UTF-8').'"').'>'.mb_substr($db->Record['abuse_headers'], 0, $headerlimit).'...</a>');
+			$db->Record['abuse_headers'] = (mb_strlen($db->Record['abuse_headers']) <= $headerlimit ? $db->Record['abuse_headers'] : '<a href="'.$GLOBALS['tf']->link('index.php', 'choice=none.abuse&lid='.$lid.'&id='.$db->Record['abuse_id']).'" class="btn" data-toggle="popover" data-trigger="hover" data-placement="bottom" '.(stripos($db->Record['abuse_headers'], '<html>') === false ? 'data-html="true" data-content="'.htmlentities(nl2br($db->Record['abuse_headers']), ENT_QUOTES, 'UTF-8').'"' : 'data-html="true" data-content="'.htmlentities($db->Record['abuse_headers'], ENT_QUOTES, 'UTF-8').'"').'>'.mb_substr($db->Record['abuse_headers'], 0, $headerlimit).'...</a>');
 			$rows[] = $db->Record;
 			if (isset($GLOBALS['tf']->variables->request['id']) && $GLOBALS['tf']->variables->request['id'] == $db->Record['abuse_id']) {
 				$table = new \TFTable;
@@ -137,7 +141,7 @@ div.tooltip {
 ');
 		add_js('tablesorter');
 		$smarty = new \TFSmarty;
-		$smarty->debugging = TRUE;
+		$smarty->debugging = true;
 		$smarty->assign('sortcol', 0);
 		$smarty->assign('sortdir', 1);
 		$smarty->assign('size', 10);
@@ -148,12 +152,12 @@ div.tooltip {
 	}
 	if (isset($GLOBALS['tf']->variables->request['headers']) && verify_csrf('abuse_admin')) {
 		$ip = $GLOBALS['tf']->variables->request['ip'];
-		if (validIp($ip, FALSE)) {
+		if (validIp($ip, false)) {
 			$server_data = get_server_from_ip($ip);
 			if (isset($server_data['email']) && $server_data['email'] != '') {
 				$email = $server_data['email'];
 				$db->query(make_insert_query('abuse', [
-					'abuse_id' => NULL,
+					'abuse_id' => null,
 					'abuse_time' => mysql_now(),
 					'abuse_ip' => $ip,
 					'abuse_type' => $GLOBALS['tf']->variables->request['type'],
@@ -189,12 +193,12 @@ div.tooltip {
 		$ips = explode("\n", trim($GLOBALS['tf']->variables->request['ips']));
 		foreach ($ips as $ip) {
 			$ip = trim($ip);
-			if (validIp($ip, FALSE)) {
+			if (validIp($ip, false)) {
 				$server_data = get_server_from_ip($ip);
 				if (isset($server_data['email']) && $server_data['email'] != '') {
 					$email = $server_data['email'];
 					$db->query(make_insert_query('abuse', [
-						'abuse_id' => NULL,
+						'abuse_id' => null,
 						'abuse_time' => mysql_now(),
 						'abuse_ip' => $ip,
 						'abuse_type' => $GLOBALS['tf']->variables->request['type'],
@@ -235,14 +239,15 @@ div.tooltip {
 			add_output('Importing File<br>');
 			$lines = explode("\n", file_get_contents($_FILES['import']['tmp_name']));
 			for ($x = 0, $x_max = count($lines); $x < $x_max; $x++) {
-				if (mb_strpos($lines[$x], ',') !== FALSE && is_numeric(mb_substr($lines[$x], 0, 1))) {
+				if (mb_strpos($lines[$x], ',') !== false && is_numeric(mb_substr($lines[$x], 0, 1))) {
 					$parts = explode(',', $lines[$x]);
 					$ip = $parts[0];
 					$date = new \DateTime(is_numeric($parts[1]) && mb_strlen($parts[1]) == 10 ? date(MYSQL_DATE_FORMAT, $parts[1]) : $parts[1]);
 					if (isset($GLOBALS['tf']->variables->request['dates']) && $GLOBALS['tf']->variables->request['dates'] != 'all' && is_numeric($GLOBALS['tf']->variables->request['dates'])) {
 						$limit_date = new \DateTime(date(MYSQL_DATE_FORMAT, time() - $GLOBALS['tf']->variables->request['dates']));
-						if ($date < $limit_date)
+						if ($date < $limit_date) {
 							continue;
+						}
 					}
 					$date = $date->format(MYSQL_DATE_FORMAT);
 					$server_data = get_server_from_ip($ip);
@@ -250,7 +255,7 @@ div.tooltip {
 						$type = 'uceprotect';
 						$email = $server_data['email'];
 						$db->query(make_insert_query('abuse', [
-							'abuse_id' => NULL,
+							'abuse_id' => null,
 							'abuse_ip' => $ip,
 							'abuse_type' => $type,
 							'abuse_time' => $date,
@@ -287,7 +292,7 @@ div.tooltip {
 		add_output('Importing CSV Text<br>');
 		$lines = explode("\n", $GLOBALS['tf']->variables->request['csvtext']);
 		for ($x = 0, $x_max = count($lines); $x < $x_max; $x++) {
-			if (mb_strpos($lines[$x], ',') !== FALSE && is_numeric(mb_substr($lines[$x], 0, 1))) {
+			if (mb_strpos($lines[$x], ',') !== false && is_numeric(mb_substr($lines[$x], 0, 1))) {
 				$parts = explode(',', $lines[$x]);
 				$ip = $parts[0];
 				$date = new \DateTime((is_numeric($parts[1]) && mb_strlen($parts[1]) == 10) ? date(MYSQL_DATE_FORMAT, $parts[1]) : $parts[1]);
@@ -297,7 +302,7 @@ div.tooltip {
 					$email = $server_data['email'];
 					$type = 'uceprotect';
 					$db->query(make_insert_query('abuse', [
-						'abuse_id' => NULL,
+						'abuse_id' => null,
 						'abuse_ip' => $ip,
 						'abuse_type' => 'uceprotect',
 						'abuse_time' => $date,
@@ -339,7 +344,7 @@ div.tooltip {
 					$email = $server_data['email'];
 					$type = 'trendmicro';
 					$db->query(make_insert_query('abuse', [
-						'abuse_id' => NULL,
+						'abuse_id' => null,
 						'abuse_ip' => $ip,
 						'abuse_type' => $type,
 						'abuse_time' => ['now()'],
@@ -446,7 +451,7 @@ div.tooltip {
 	$table->add_field('<input type="file" name="import">');
 	$table->add_row();
 	$table->add_field('Dates');
-	$table->add_field($table->make_radio('dates', 'all', TRUE).'All  '.$table->make_radio('dates', 60 * 60 * 24 * 2, FALSE).'Last 2 Days  ');
+	$table->add_field($table->make_radio('dates', 'all', true).'All  '.$table->make_radio('dates', 60 * 60 * 24 * 2, false).'Last 2 Days  ');
 	$table->add_row();
 	$table->set_colspan(2);
 	$table->add_field('or');
@@ -469,5 +474,5 @@ div.tooltip {
 	$table->add_field($table->make_submit('Submit'));
 	$table->add_row();
 	add_output($table->get_table());
-	return TRUE;
+	return true;
 }

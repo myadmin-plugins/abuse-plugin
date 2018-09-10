@@ -49,7 +49,8 @@ class ImapAbuseCheck
 	 * @param int $delete_attachments whether or not to delete the attachments and emails
 	 * @param bool|false|int $limit_ips how many types of spam should a person receive a day for this type before hitting a limit
 	 */
-	public function __construct($imap_server, $username, $password, $db, $delete_attachments = 1, $limit_ips = false) {
+	public function __construct($imap_server, $username, $password, $db, $delete_attachments = 1, $limit_ips = false)
+	{
 		$this->imap_server = $imap_server;
 		$this->imap_folder = preg_replace('/^{.*}/m', '', $this->imap_server);
 		$this->imap_username = $username;
@@ -58,18 +59,21 @@ class ImapAbuseCheck
 		$this->set_default_email_headers();
 		$this->delete_attachments = $delete_attachments;
 		$this->limit_ips = $limit_ips;
-		if (isset($GLOBALS['abuse_ips']))
+		if (isset($GLOBALS['abuse_ips'])) {
 			$this->ips = $GLOBALS['abuse_ips'];
+		}
 		//echo sizeof($this->ips) . " ips loaded, limiting to " . $this->limit_ips . " ips/address\n";
 		//print_r($this->ips);
-		if (isset($GLOBALS['all_ips']))
+		if (isset($GLOBALS['all_ips'])) {
 			$this->all_ips = $GLOBALS['all_ips'];
-		else
+		} else {
 			$this->load_all_ips();
-		if (isset($GLOBALS['all_client_ips']))
+		}
+		if (isset($GLOBALS['all_client_ips'])) {
 			$this->client_ips = $GLOBALS['all_client_ips'];
-		else
+		} else {
 			$this->load_client_ips();
+		}
 		$this->connect();
 		function_requirements('get_server_from_ip');
 	}
@@ -79,7 +83,8 @@ class ImapAbuseCheck
 	 *
 	 * @return string the ip regex string
 	 */
-	public function get_ip_regex() {
+	public function get_ip_regex()
+	{
 		return $this->ip_regex;
 	}
 
@@ -88,21 +93,24 @@ class ImapAbuseCheck
 	 *
 	 * @return void
 	 */
-	public function set_default_email_headers() {
+	public function set_default_email_headers()
+	{
 		$this->email_headers = "MIME-Version: 1.0\nContent-type: text/html; charset=UTF-8\nFrom: Abuse <abuse@interserver.net>\n";
 	}
 
 	/**
 	 * @param $all_ips
 	 */
-	public function set_all_ips($all_ips) {
+	public function set_all_ips($all_ips)
+	{
 		$this->all_ips = $all_ips;
 	}
 
 	/**
 	 * loads all the IP blocks into the class and global all_ips
 	 */
-	public function load_all_ips() {
+	public function load_all_ips()
+	{
 		//echo "Loading IP Blocks\n";
 		function_requirements('get_all_ips_from_ipblocks');
 		$this->all_ips = get_all_ips_from_ipblocks(true);
@@ -112,7 +120,8 @@ class ImapAbuseCheck
 	/**
 	 * loads client ips into class and global all_client_ips
 	 */
-	public function load_client_ips() {
+	public function load_client_ips()
+	{
 		//echo "Loading IP Blocks\n";
 		function_requirements('get_client_ips');
 		$this->client_ips = get_client_ips(true);
@@ -122,7 +131,8 @@ class ImapAbuseCheck
 	/**
 	 * connects to the imap server
 	 */
-	public function connect() {
+	public function connect()
+	{
 		$this->mbox = imap_open($this->imap_server, $this->imap_username, $this->imap_password) or die('Cannot connect to '.$this->imap_server);
 		/*  This Gave me this:
 		stdClass Object
@@ -144,7 +154,8 @@ class ImapAbuseCheck
 	 * @param string $against
 	 * @param string $field
 	 */
-	public function register_preg_match($regex, $against = 'headers', $field = 'ip') {
+	public function register_preg_match($regex, $against = 'headers', $field = 'ip')
+	{
 		$regex = str_replace('%IP%', $this->get_ip_regex(), $regex);
 		$this->preg_match[] = [
 			'regex' => $regex,
@@ -160,7 +171,8 @@ class ImapAbuseCheck
 	 * @param string $against
 	 * @param string $field
 	 */
-	public function register_preg_match_all($regex, $against = 'headers', $field = 'ip') {
+	public function register_preg_match_all($regex, $against = 'headers', $field = 'ip')
+	{
 		$regex = str_replace('%IP%', $this->get_ip_regex(), $regex);
 		$this->preg_match_all[] = [
 			'regex' => $regex,
@@ -173,16 +185,18 @@ class ImapAbuseCheck
 	 * @param string $type
 	 * @param bool   $limit
 	 */
-	public function process($type = 'spam', $limit = false) {
+	public function process($type = 'spam', $limit = false)
+	{
 		//print_r($this->MC);
 		if ($this->MC->Nmsgs > 0) {
 			$abused = 0;
 			$db = $this->db;
-			if ($limit === false)
+			if ($limit === false) {
 				$result = imap_fetch_overview($this->mbox, "1:{$this->MC->Nmsgs}", 0);
-			else {
-				if ($limit > $this->MC->Nmsgs)
+			} else {
+				if ($limit > $this->MC->Nmsgs) {
 					$limit = $this->MC->Nmsgs;
+				}
 				$result = imap_fetch_overview($this->mbox, "1:{$limit}", 0);
 			}
 			foreach ($result as $overview) {
@@ -205,16 +219,18 @@ class ImapAbuseCheck
 					}
 					$match_res = preg_match($match_data['regex'], $match_against, $matches);
 					if ($match_res) {
-						if (trim($matches[$match_data['field']]) != '')
+						if (trim($matches[$match_data['field']]) != '') {
 							$ip = trim($matches[$match_data['field']]);
+						}
 					} else {
 						//print_r($match_res);
 						//echo "{$this->imap_folder} Couldn't Find IP in " . $match_data['against'] . ":\n			" . str_replace("\n", "\n			", $match_against) . "\nUsing " . $match_data['regex'].PHP_EOL;
 					}
 				}
 				foreach ($this->preg_match_all as $match_data) {
-					if ($match_data['against'] == 'body')
+					if ($match_data['against'] == 'body') {
 						$match_against = $body;
+					}
 					if ($match_data['against'] == 'bodyfull') {
 						$match_against = $this->plainmsg;
 					} else {
@@ -232,7 +248,7 @@ class ImapAbuseCheck
 						//echo "{$this->imap_folder} Couldn't Find IP in {$match_data['against']}:\n	" . str_replace("\n", "\n	", $match_against) . "\nUsing " . $match_data['regex'].PHP_EOL;
 					}
 				}
-				if ($ip !== false && validIp($ip, FALSE) && (in_array($ip, $this->all_ips) || in_array($ip, $this->client_ips))) {
+				if ($ip !== false && validIp($ip, false) && (in_array($ip, $this->all_ips) || in_array($ip, $this->client_ips))) {
 					if (in_array($ip, $this->client_ips)) {
 						$server_data = ['email' => 'sreekanth@nettlinxinc.com'];
 					} else {
@@ -250,8 +266,9 @@ class ImapAbuseCheck
 							echo "{$this->imap_folder} Overwriting IP $ip Contact $email => abuse@interserver.net".PHP_EOL;
 							$email = 'abuse@interserver.net';
 						}
-						if ($email == 'john@interserver.net')
+						if ($email == 'john@interserver.net') {
 							$email = 'abuse@interserver.net';
+						}
 						//print_r(array('ip' => $ip, 'email' => $email, 'subject' => $subject, 'plainmsg' => $this->plainmsg, 'htmlmsg' => $this->htmlmsg));
 						//print_r(xml2array(trim($this->htmlmsg), 1, 'attribute'));
 						//exit;
@@ -276,8 +293,9 @@ class ImapAbuseCheck
 							[$email, $ip, 'spam', 1, $id, md5("${id}${ip}${type}")],
 							$email_template);
 						//$email = 'john@interserver.net';
-						if (!isset($this->ips[$ip]))
+						if (!isset($this->ips[$ip])) {
 							$this->ips[$ip] = 0;
+						}
 						if (($this->limit_ips === false || $this->ips[$ip] < $this->limit_ips) && !in_array($server_data['status'], ['canceled', 'expired'])) {
 							echo "{$this->imap_folder} Abuse Entry for {$ip} Added - Emailing {$email}".PHP_EOL;
 							mail($email, $subject, $message, $this->email_headers);
@@ -294,13 +312,15 @@ class ImapAbuseCheck
 					echo "{$this->imap_folder} Invalid IP {$ip} or not ours in Message Headers:" . json_encode(explode("\n", $headers)). "".PHP_EOL;
 				}
 				//echo "OVERVIEW:" . $overview->msgno . " " . $overview->subject . " " . $overview->date . "\nBODY:$body\n";
-				if ($this->delete_attachments == 1)
+				if ($this->delete_attachments == 1) {
 					imap_delete($this->mbox, $overview->msgno);
+				}
 			}
 			$GLOBALS['abuse_ips'] = $this->ips;
 		}
-		if ($this->delete_attachments == 1)
+		if ($this->delete_attachments == 1) {
 			$this->delete_messages();
+		}
 		$this->disconnect();
 	}
 
@@ -309,7 +329,8 @@ class ImapAbuseCheck
 	 *
 	 * @return void
 	 */
-	public function delete_messages() {
+	public function delete_messages()
+	{
 		imap_expunge($this->mbox);
 	}
 
@@ -318,7 +339,8 @@ class ImapAbuseCheck
 	 *
 	 * @return void
 	 */
-	public function disconnect() {
+	public function disconnect()
+	{
 		imap_close($this->mbox);
 	}
 
@@ -327,7 +349,8 @@ class ImapAbuseCheck
 	 *
 	 * @param $mid
 	 */
-	public function getmsg($mid) {
+	public function getmsg($mid)
+	{
 		// input $mbox = IMAP stream, $mid = message id
 		// output all the following:
 		//  htmlmsg, plainmsg, charset, attachments
@@ -352,12 +375,14 @@ class ImapAbuseCheck
 		// add code here to get date, from, to, cc, subject...
 		// BODY
 		$s = imap_fetchstructure($this->mbox, $mid);
-		if (!isset($s->parts)) // simple
+		if (!isset($s->parts)) { // simple
 
-			$this->getpart($mid, $s, 0); // pass 0 as part-number
+			$this->getpart($mid, $s, 0);
+		} // pass 0 as part-number
 		else { // multipart: cycle through each part
-			foreach ($s->parts as $partno0 => $p)
+			foreach ($s->parts as $partno0 => $p) {
 				$this->getpart($mid, $p, $partno0 + 1);
+			}
 		}
 	}
 
@@ -366,25 +391,31 @@ class ImapAbuseCheck
 	 * @param $p
 	 * @param $partno
 	 */
-	public function getpart($mid, $p, $partno) {
+	public function getpart($mid, $p, $partno)
+	{
 		// $partno = '1', '2', '2.1', '2.1.3', etc for multipart, 0 if simple
 		// DECODE DATA
 		$data = $partno ? imap_fetchbody($this->mbox, $mid, $partno) : // multipart
 			imap_body($this->mbox, $mid); // simple
 		// Any part may be encoded, even plain text messages, so check everything.
-		if ($p->encoding == 4)
+		if ($p->encoding == 4) {
 			$data = quoted_printable_decode($data);
-		elseif ($p->encoding == 3)
+		} elseif ($p->encoding == 3) {
 			$data = base64_decode($data);
+		}
 		// PARAMETERS
 		// get all parameters, like charset, filenames of attachments, etc.
 		$params = [];
-		if (isset($p->parameters))
-			foreach ($p->parameters as $x)
+		if (isset($p->parameters)) {
+			foreach ($p->parameters as $x) {
 				$params[strtolower($x->attribute)] = $x->value;
-		if (isset($p->dparameters))
-			foreach ($p->dparameters as $x)
+			}
+		}
+		if (isset($p->dparameters)) {
+			foreach ($p->dparameters as $x) {
 				$params[strtolower($x->attribute)] = $x->value;
+			}
+		}
 		// ATTACHMENT
 		// Any part with a filename is an attachment,
 		// so an attached text file (type 0) is not mistaken as the message.
@@ -398,12 +429,14 @@ class ImapAbuseCheck
 		if ($p->type == 0 && $data) {
 			// Messages may be split in different parts because of inline attachments,
 			// so append parts together with blank row.
-			if (strtolower($p->subtype) == 'plain')
+			if (strtolower($p->subtype) == 'plain') {
 				$this->plainmsg .= trim($data) . "\n\n";
-			else
+			} else {
 				$this->htmlmsg .= $data.'<br><br>';
-			if (isset($params['charset']))
-				$this->charset = $params['charset']; // assume all parts are same charset
+			}
+			if (isset($params['charset'])) {
+				$this->charset = $params['charset'];
+			} // assume all parts are same charset
 		}
 		// EMBEDDED MESSAGE
 		// Many bounce notifications embed the original message as type 2,
@@ -411,20 +444,21 @@ class ImapAbuseCheck
 		// There are no PHP functions to parse embedded messages,
 		// so this just appends the raw source to the main message.
 		elseif ($p->type == 2 && $data) {
-
 			$this->plainmsg .= $data . "\n\n";
 		}
 		// SUBPART RECURSION
 		if (isset($p->parts)) {
-			foreach ($p->parts as $partno0 => $p2)
-				$this->getpart($mid, $p2, $partno.'.'.($partno0 + 1)); // 1.2, 1.2.1, etc.
+			foreach ($p->parts as $partno0 => $p2) {
+				$this->getpart($mid, $p2, $partno.'.'.($partno0 + 1));
+			} // 1.2, 1.2.1, etc.
 		}
 	}
 
 	/**
 	 * displays the folders for an imap account
 	 */
-	public function get_folders() {
+	public function get_folders()
+	{
 		/* This Gave me this:
 		(0) {mx.interserver.net:143/imap/readonly}INBOX.Archives.2009,'.',64<br />
 		...
@@ -452,7 +486,8 @@ class ImapAbuseCheck
 	/**
 	 * displays all he folders in the imap account
 	 */
-	public function list_folders() {
+	public function list_folders()
+	{
 		/* This Gave me this:
 		<h1>Mailboxes</h1>
 		{mx.interserver.net:143/imap/readonly}INBOX.Archives.2009<br />
@@ -468,32 +503,37 @@ class ImapAbuseCheck
 		if ($folders == false) {
 			echo "Call failed<br />\n";
 		} else {
-			foreach ($folders as $val)
+			foreach ($folders as $val) {
 				echo $val . "<br />".PHP_EOL;
+			}
 		}
 	}
 
-	public static function fix_headers($headers) {
+	public static function fix_headers($headers)
+	{
 		$out = '';
 		$state = 0;
 		$headers = false;
-		$lines = explode("\n", trim(str_replace("\r",'',$headers)));
-		foreach ($lines as $line)
+		$lines = explode("\n", trim(str_replace("\r", '', $headers)));
+		foreach ($lines as $line) {
 			if ($state == 0) {
 				$out .= $line.PHP_EOL;
-				if (trim($line) == '')
+				if (trim($line) == '') {
 					$state++;
-			} elseif ($state == 1)
+				}
+			} elseif ($state == 1) {
 				if (preg_match('/^[A-Z][a-zA-Z0-9\-]*: /', trim($line))) {
 					$headers = true;
 					$out .= $line.PHP_EOL;
 					$state--;
 				} elseif ($headers == true && trim($line) != '') {
 					$state++;
-				} elseif ($headers == false)
+				} elseif ($headers == false) {
 					$out .= $line.PHP_EOL;
+				}
+			}
+		}
 		$out = preg_replace("/\n\s*\n/m", "\n", strip_tags($out));
 		return $out;
 	}
-
 }

@@ -13,7 +13,8 @@
  * @throws \Exception
  * @throws \SmartyException
  */
-function abuse() {
+function abuse()
+{
 	/*
 	CREATE TABLE my.abuse (
 	abuse_id int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -31,27 +32,28 @@ function abuse() {
 	$db = get_module_db($module);
 	$GLOBALS['tf']->accounts->set_db_module($module);
 	$GLOBALS['tf']->history->set_db_module($module);
-	$logged_in = FALSE;
-	$continue = FALSE;
+	$logged_in = false;
+	$continue = false;
 	if (isset($GLOBALS['tf']->variables->request['key']) && isset($GLOBALS['tf']->variables->request['id'])) {
 		$key = $GLOBALS['tf']->variables->request['key'];
 		$id = (int)$GLOBALS['tf']->variables->request['id'];
 		$db->query("select md5(concat(abuse_id,abuse_ip,abuse_type)) as abuse_key from abuse where abuse_id=$id");
 		if ($db->num_rows() == 1) {
 			$db->next_record(MYSQL_ASSOC);
-			if ($db->Record['abuse_key'] == $key)
-				$continue = TRUE;
+			if ($db->Record['abuse_key'] == $key) {
+				$continue = true;
+			}
 		}
 	}
 	if (!$continue && $GLOBALS['tf']->session->verify()) {
-		$logged_in = TRUE;
-		$continue = TRUE;
+		$logged_in = true;
+		$continue = true;
 		$GLOBALS['tf']->accounts->data = $GLOBALS['tf']->accounts->read($GLOBALS['tf']->session->account_id);
 		$GLOBALS['tf']->ima = $GLOBALS['tf']->accounts->data['ima'];
 	}
-	if ($continue !== TRUE) {
+	if ($continue !== true) {
 		add_output('Invalid Authentication, Please Login first or use the URL given in the email.');
-		return FALSE;
+		return false;
 	}
 	unset($continue);
 	if ($GLOBALS['tf']->ima == 'admin' && !isset($GLOBALS['tf']->variables->request['id'])) {
@@ -73,7 +75,7 @@ jQuery(document).ready(function() {
 				$db->next_record(MYSQL_ASSOC);
 				$ip = $db->Record['abuse_ip'];
 				$server_data = get_server_from_ip($ip);
-				if (($logged_in && $GLOBALS['tf']->accounts->data['account_lid'] == $server_data['email']) || ($logged_in && $GLOBALS['tf']->accounts->data['account_lid'] == $db->Record['abuse_lid']) || ($logged_in == FALSE) || ($GLOBALS['tf']->ima == 'admin')) {
+				if (($logged_in && $GLOBALS['tf']->accounts->data['account_lid'] == $server_data['email']) || ($logged_in && $GLOBALS['tf']->accounts->data['account_lid'] == $db->Record['abuse_lid']) || ($logged_in == false) || ($GLOBALS['tf']->ima == 'admin')) {
 					if (isset($GLOBALS['tf']->variables->request['response'])) {
 						$db->query("update abuse set abuse_status='" . $db->real_escape($GLOBALS['tf']->variables->request['response_status']) . "' where abuse_id={$id}", __LINE__, __FILE__);
 						$db->query("update abuse_data set abuse_response='" . $db->real_escape($GLOBALS['tf']->variables->request['response']) . "' where abuse_id={$id}", __LINE__, __FILE__);
@@ -82,14 +84,15 @@ jQuery(document).ready(function() {
 						add_output('Abuse Entry Updated <a href="'.$GLOBALS['tf']->link('index.php', 'choice=none.abuse').'">View Pending Abuse Complaints</a>');
 					}
 					$smarty->assign($db->Record);
-					$smarty->assign('post_location', 'abuse.php?id='.$id . ($logged_in === TRUE || !isset($key) ? '' : '&key='.$key));
+					$smarty->assign('post_location', 'abuse.php?id='.$id . ($logged_in === true || !isset($key) ? '' : '&key='.$key));
 					$smarty->assign('response_status', make_select('response_status', ['resolved','notspam','notabuse','pending'], ['Resolved','Not Spam','Not Abuse','Pending'], $db->Record['abuse_status']));
 					add_output($smarty->fetch('abuse.tpl'));
 				} else {
 					$eparts = explode('@', $server_data['email']);
 					$anonemail = mb_substr($eparts[0], 0, 1);
-					for ($x = 0; $x < mb_strlen($server_data['email']) -1; $x++)
+					for ($x = 0; $x < mb_strlen($server_data['email']) -1; $x++) {
 						$anonemail .= '*';
+					}
 					$anonemail .= $eparts[1];
 					add_output('Your account '.$GLOBALS['tf']->accounts->data['account_lid']. ' does not match the owner of this complaint '.$anonemail);
 				}
@@ -110,7 +113,7 @@ jQuery(document).ready(function() {
 					$table->add_field($db->Record['abuse_ip']);
 					$table->add_field($db->Record['abuse_time']);
 					$table->add_field($db->Record['abuse_type']);
-					$table->add_field('<a href="'.$GLOBALS['tf']->link('abuse.php', 'id='.$db->Record['abuse_id'] . ($logged_in === TRUE ? '' : '&key='.$key)).'">Update</a>');
+					$table->add_field('<a href="'.$GLOBALS['tf']->link('abuse.php', 'id='.$db->Record['abuse_id'] . ($logged_in === true ? '' : '&key='.$key)).'">Update</a>');
 					$table->add_row();
 				}
 				add_output($table->get_table());

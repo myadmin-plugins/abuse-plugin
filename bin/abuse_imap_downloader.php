@@ -25,10 +25,12 @@ echo 'Loaded '.$total_sent.' Abuse Records From Today for '.count($abuse_ips).' 
 $checks = json_decode(file_get_contents(INCLUDE_ROOT.'/config/abuse.json'), true);
 foreach ($checks as $check) {
 	$abuse = new ImapAbuseCheck('{'.$check['host'].':'.$check['port'].'}'.$check['mailbox'], ABUSE_IMAP_USER, ABUSE_IMAP_PASS, $db, $check['delete_attachments'], $check['mail_limit']);
-	foreach ($check['patterns'] as $pattern)
-		if ($pattern['type'] == 'match')
+	foreach ($check['patterns'] as $pattern) {
+		if ($pattern['type'] == 'match') {
 			$abuse->register_preg_match($pattern['pattern'], $pattern['what']);
-		elseif ($pattern['type'] == 'match_all')
+		} elseif ($pattern['type'] == 'match_all') {
 			$abuse->register_preg_match_all($pattern['pattern'], $pattern['what']);
+		}
+	}
 	$abuse->process($check['type'], $check['limit']);
 }
