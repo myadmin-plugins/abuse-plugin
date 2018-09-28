@@ -55,9 +55,9 @@ class Plugin
 	public static function getRequirements(GenericEvent $event)
 	{
 		$loader = $event->getSubject();
-		$loader->add_page_requirement('abuse', '/../vendor/detain/abuse-plugin/src/abuse.php');
-		$loader->add_page_requirement('abuse_admin', '/../vendor/detain/abuse-plugin/src/abuse_admin.php');
-		$loader->add_requirement('class.ImapAbuseCheck', '/../vendor/detain/abuse-plugin/src/ImapAbuseCheck.php');
+		$loader->add_page_requirement('abuse', '/../vendor/detain/myadmin-abuse-plugin/src/abuse.php');
+		$loader->add_page_requirement('abuse_admin', '/../vendor/detain/myadmin-abuse-plugin/src/abuse_admin.php');
+		$loader->add_requirement('class.ImapAbuseCheck', '/../vendor/detain/myadmin-abuse-plugin/src/ImapAbuseCheck.php');
 	}
 
 	/**
