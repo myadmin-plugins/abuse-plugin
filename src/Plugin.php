@@ -44,7 +44,7 @@ class Plugin
 		if ($GLOBALS['tf']->ima == 'admin') {
 			function_requirements('has_acl');
 			if (has_acl('client_billing')) {
-				$menu->add_link('admin', 'choice=none.abuse_admin', '/images/myadmin/spam-can.png', __('Abuse'));
+				$menu->add_link('admin', 'choice=none.abuse_admin', '/images/myadmin/spam-can.png', _('Abuse'));
 			}
 		}
 	}
@@ -72,7 +72,7 @@ class Plugin
          * @var \MyAdmin\Settings $settings
          **/
         $settings = $event->getSubject();
-		$settings->add_text_setting(__('General'), __('Abuse'), 'abuse_imap_user', __('Abuse IMAP User'), __('Abuse IMAP Username'), ABUSE_IMAP_USER);
-		$settings->add_text_setting(__('General'), __('Abuse'), 'abuse_imap_pass', __('Abuse IMAP Pass'), __('Abuse IMAP Password'), ABUSE_IMAP_PASS);
+		$settings->add_text_setting(_('General'), _('Abuse'), 'abuse_imap_user', _('Abuse IMAP User'), _('Abuse IMAP Username'), ABUSE_IMAP_USER);
+		$settings->add_text_setting(_('General'), _('Abuse'), 'abuse_imap_pass', _('Abuse IMAP Pass'), _('Abuse IMAP Password'), ABUSE_IMAP_PASS);
 	}
 }
