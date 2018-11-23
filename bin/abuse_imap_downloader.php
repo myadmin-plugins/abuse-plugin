@@ -6,7 +6,7 @@
  * through its ip, we contact the clients letting them know of the abuse complaint.
  *
  * @author Joe Huss <detain@interserver.net>
- * @copyright 2018
+ * @copyright 2019
  * @package Abuse
  * @category Crontab
  */
