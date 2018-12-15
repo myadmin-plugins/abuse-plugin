@@ -533,7 +533,7 @@ class ImapAbuseCheck
 				}
 			}
 		}
-		$out = preg_replace("/\n\s*\n/m", "\n", strip_tags($out));
+		$out = rtrim(preg_replace("/\n\s*\n/m", "\n", strip_tags($out)));
 		return $out;
 	}
 }
