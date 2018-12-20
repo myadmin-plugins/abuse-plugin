@@ -30,8 +30,6 @@ function abuse()
 	function_requirements('get_server_from_ip');
 	$module = get_module_name('default');
 	$db = get_module_db($module);
-	$GLOBALS['tf']->accounts->set_db_module($module);
-	$GLOBALS['tf']->history->set_db_module($module);
 	$logged_in = false;
 	$continue = false;
 	if (isset($GLOBALS['tf']->variables->request['key']) && isset($GLOBALS['tf']->variables->request['id'])) {
