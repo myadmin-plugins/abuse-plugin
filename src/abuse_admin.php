@@ -174,7 +174,8 @@ div.tooltip {
 				$message = str_replace(
 					['{$email}', '{$ip}', '{$type}', '{$count}', '{$id}', '{$key}'],
 					[$server_data['email_abuse'], $ip, $GLOBALS['tf']->variables->request['type'], $GLOBALS['tf']->variables->request['amount'], $id, md5($id . $ip . $GLOBALS['tf']->variables->request['type'])],
-					$email_template);
+					$email_template
+				);
 				mail($server_data['email_abuse'], $subject, $message, $headers);
 				//mail('john@interserver.net', $subject, $message, $headers);
 				//$mailed++;
@@ -215,7 +216,8 @@ div.tooltip {
 					$message = str_replace(
 						['{$email}', '{$ip}', '{$type}', '{$count}', '{$id}', '{$key}'],
 						[$server_data['email_abuse'], $ip, $GLOBALS['tf']->variables->request['type'], 1, $id, md5($id . $ip . $GLOBALS['tf']->variables->request['type'])],
-						$email_template);
+						$email_template
+					);
 					mail($server_data['email_abuse'], $subject, $message, $headers);
 					//mail('john@interserver.net', $subject, $message, $headers);
 					//$mailed++;
@@ -268,7 +270,8 @@ div.tooltip {
 						$message = str_replace(
 							['{$email}', '{$ip}', '{$type}', '{$count}', '{$id}', '{$key}'],
 							[$server_data['email_abuse'], $ip, $type, 1, $id, md5($id . $ip . $type)],
-							$email_template);
+							$email_template
+						);
 						mail($server_data['email_abuse'], $subject, $message, $headers);
 						//mail('john@interserver.net', $subject, $message, $headers);
 						//$mailed++;
@@ -315,7 +318,8 @@ div.tooltip {
 					$message = str_replace(
 						['{$email}', '{$ip}', '{$type}', '{$count}', '{$id}', '{$key}'],
 						[$server_data['email_abuse'], $ip, $type, 1, $id, md5($id . $ip . $type)],
-						$email_template);
+						$email_template
+					);
 					mail($server_data['email_abuse'], $subject, $message, $headers);
 					//mail('john@interserver.net', $subject, $message, $headers);
 					//$mailed++;
@@ -361,7 +365,8 @@ div.tooltip {
 					$message = str_replace(
 						['{$email}', '{$ip}', '{$type}', '{$count}', '{$id}', '{$key}'],
 						[$server_data['email_abuse'], $ip, $type, 1, $id, md5($id . $ip . $type)],
-						$email_template);
+						$email_template
+					);
 					mail($server_data['email_abuse'], $subject, $message, $headers);
 					//mail('john@interserver.net', $subject, $message, $headers);
 					//$mailed++;
@@ -388,14 +393,17 @@ div.tooltip {
 	$table->add_field($table->make_input('ip', '', 30));
 	$table->add_row();
 	$table->add_field('Type of Abuse');
-	$table->add_field(make_select('type', [
+	$table->add_field(make_select(
+		'type',
+		[
 		'scanning',
 		'hacking',
 		'spam',
 		'child porn',
 		'phishing site',
 		'other'
-	], [
+	],
+		[
 		'scanning',
 		'hacking',
 		'spam',
@@ -422,14 +430,17 @@ div.tooltip {
 	$table->add_field('<textarea rows=8 cols=20 name="ips"></textarea>');
 	$table->add_row();
 	$table->add_field('Type of Abuse');
-	$table->add_field(make_select('type', [
+	$table->add_field(make_select(
+		'type',
+		[
 		'scanning',
 		'hacking',
 		'spam',
 		'child porn',
 		'phishing site',
 		'other'
-	], [
+	],
+		[
 		'scanning',
 		'hacking',
 		'spam',

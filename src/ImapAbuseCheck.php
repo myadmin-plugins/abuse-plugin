@@ -291,7 +291,8 @@ class ImapAbuseCheck
 						$message = str_replace(
 							['{$email}', '{$ip}', '{$type}', '{$count}', '{$id}', '{$key}'],
 							[$email, $ip, 'spam', 1, $id, md5("${id}${ip}${type}")],
-							$email_template);
+							$email_template
+						);
 						//$email = 'john@interserver.net';
 						if (!isset($this->ips[$ip])) {
 							$this->ips[$ip] = 0;

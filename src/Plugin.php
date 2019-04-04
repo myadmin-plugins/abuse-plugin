@@ -54,10 +54,10 @@ class Plugin
 	 */
 	public static function getRequirements(GenericEvent $event)
 	{
-        /**
-         * @var \MyAdmin\Plugins\Loader $this->loader
-         */
-        $loader = $event->getSubject();
+		/**
+		 * @var \MyAdmin\Plugins\Loader $this->loader
+		 */
+		$loader = $event->getSubject();
 		$loader->add_page_requirement('abuse', '/../vendor/detain/myadmin-abuse-plugin/src/abuse.php');
 		$loader->add_page_requirement('abuse_admin', '/../vendor/detain/myadmin-abuse-plugin/src/abuse_admin.php');
 		$loader->add_requirement('class.ImapAbuseCheck', '/../vendor/detain/myadmin-abuse-plugin/src/ImapAbuseCheck.php');
@@ -66,12 +66,12 @@ class Plugin
 	/**
 	 * @param \Symfony\Component\EventDispatcher\GenericEvent $event
 	 */
-    public static function getSettings(GenericEvent $event)
-    {
-        /**
-         * @var \MyAdmin\Settings $settings
-         **/
-        $settings = $event->getSubject();
+	public static function getSettings(GenericEvent $event)
+	{
+		/**
+		 * @var \MyAdmin\Settings $settings
+		 **/
+		$settings = $event->getSubject();
 		$settings->add_text_setting(_('General'), _('Abuse'), 'abuse_imap_user', _('Abuse IMAP User'), _('Abuse IMAP Username'), ABUSE_IMAP_USER);
 		$settings->add_text_setting(_('General'), _('Abuse'), 'abuse_imap_pass', _('Abuse IMAP Pass'), _('Abuse IMAP Password'), ABUSE_IMAP_PASS);
 	}
