@@ -84,7 +84,7 @@ jQuery(document).ready(function() {
 					$smarty->assign($db->Record);
 					$smarty->assign('post_location', 'abuse.php?id='.$id . ($logged_in === true || !isset($key) ? '' : '&key='.$key));
 					$smarty->assign('response_status', make_select('response_status', ['resolved','notspam','notabuse','pending'], ['Resolved','Not Spam','Not Abuse','Pending'], $db->Record['abuse_status']));
-					add_output($smarty->fetch('abuse.tpl'));
+					add_output($smarty->fetch('admin/abuse.tpl'));
 				} else {
 					$eparts = explode('@', $server_data['email']);
 					$anonemail = mb_substr($eparts[0], 0, 1);

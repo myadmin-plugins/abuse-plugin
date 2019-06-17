@@ -29,7 +29,7 @@ function abuse_admin()
 	}
 	page_title('Report Abuse');
 	$headers = get_default_mail_headers(['TITLE' => 'Abuse', 'EMAIL_FROM' => 'abuse@interserver.net']);
-	$email_template = file_get_contents(__DIR__.'/templates/abuse.tpl');
+	$email_template = file_get_contents(__DIR__.'/templates/admin/abuse.tpl');
 	/* stats to get
 	biggest abusers (today, 3 day, 7 day, etc..)
 	Optionally limit abuse results to a single username
