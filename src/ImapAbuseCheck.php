@@ -287,7 +287,7 @@ class ImapAbuseCheck
 							->setPlainmsg($this->plainmsg)
 							->setHtmlmsg($this->htmlmsg)
 							->save();
-						$email_template = file_get_contents(__DIR__.'/templates/admin/abuse.tpl');
+						$email_template = file_get_contents(__DIR__.'/templates/abuse.tpl');
 						$message = str_replace(
 							['{$email}', '{$ip}', '{$type}', '{$count}', '{$id}', '{$key}'],
 							[$email, $ip, 'spam', 1, $id, md5("${id}${ip}${type}")],
