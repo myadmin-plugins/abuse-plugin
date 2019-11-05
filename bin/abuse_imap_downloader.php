@@ -13,6 +13,7 @@
 
 include_once __DIR__.'/../../../../include/functions.inc.php';
 include_once __DIR__.'/../src/ImapAbuseCheck.php';
+$GLOBALS['tf']->session->sessionid = substr(basename($_SERVER['argv'][0], '.php'), 0, 32);
 $db = $GLOBALS['tf']->db;
 $db->query('select abuse_ip,count(abuse_lid) as count from abuse where Year(abuse_time)=Year(now()) and Month(abuse_time)=Month(now()) and Day(abuse_time)=Day(now()) group by abuse_ip');
 $abuse_ips = [];
