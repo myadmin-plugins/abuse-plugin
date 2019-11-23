@@ -299,7 +299,7 @@ class ImapAbuseCheck
 						}
 						if (($this->limit_ips === false || $this->ips[$ip] < $this->limit_ips) && !in_array($server_data['status'], ['canceled', 'expired'])) {
 							echo "{$this->imap_folder} Abuse Entry for {$ip} Added - Emailing {$email}".PHP_EOL;
-							mail($email, $subject, $message, $this->email_headers);
+							(new \MyAdmin\Mail())->clientMail($subject, $message, $email, '');
 						} else {
 							echo "{$this->imap_folder} Abuse Entry for {$ip} Added - Not Emailing {$email} ({$this->ips[$ip]} >= {$this->limit_ips} Limit)".PHP_EOL;
 						}

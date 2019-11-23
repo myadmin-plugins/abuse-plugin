@@ -28,7 +28,6 @@ function abuse_admin()
 		return false;
 	}
 	page_title('Report Abuse');
-	$headers = get_default_mail_headers(['TITLE' => 'Abuse', 'EMAIL_FROM' => 'abuse@interserver.net']);
 	$email_template = file_get_contents(__DIR__.'/templates/abuse.tpl');
 	/* stats to get
 	biggest abusers (today, 3 day, 7 day, etc..)
@@ -176,8 +175,7 @@ div.tooltip {
 					[$server_data['email_abuse'], $ip, $GLOBALS['tf']->variables->request['type'], $GLOBALS['tf']->variables->request['amount'], $id, md5($id . $ip . $GLOBALS['tf']->variables->request['type'])],
 					$email_template
 				);
-				mail($server_data['email_abuse'], $subject, $message, $headers);
-				//mail('john@interserver.net', $subject, $message, $headers);
+				(new \MyAdmin\Mail())->clientMail($subject, $message, $server_data['email_abuse'], '');
 				//$mailed++;
 				//if ($mailed > $maxmailed)
 				//{
@@ -218,8 +216,7 @@ div.tooltip {
 						[$server_data['email_abuse'], $ip, $GLOBALS['tf']->variables->request['type'], 1, $id, md5($id . $ip . $GLOBALS['tf']->variables->request['type'])],
 						$email_template
 					);
-					mail($server_data['email_abuse'], $subject, $message, $headers);
-					//mail('john@interserver.net', $subject, $message, $headers);
+					(new \MyAdmin\Mail())->clientMail($subject, $message, $server_data['email_abuse'], '');
 					//$mailed++;
 					//if ($mailed > $maxmailed)
 					//{
@@ -272,8 +269,7 @@ div.tooltip {
 							[$server_data['email_abuse'], $ip, $type, 1, $id, md5($id . $ip . $type)],
 							$email_template
 						);
-						mail($server_data['email_abuse'], $subject, $message, $headers);
-						//mail('john@interserver.net', $subject, $message, $headers);
+						(new \MyAdmin\Mail())->clientMail($subject, $message, $server_data['email_abuse'], '');
 						//$mailed++;
 						//if ($mailed > $maxmailed)
 						//{
@@ -320,8 +316,7 @@ div.tooltip {
 						[$server_data['email_abuse'], $ip, $type, 1, $id, md5($id . $ip . $type)],
 						$email_template
 					);
-					mail($server_data['email_abuse'], $subject, $message, $headers);
-					//mail('john@interserver.net', $subject, $message, $headers);
+					(new \MyAdmin\Mail())->clientMail($subject, $message, $server_data['email_abuse'], '');
 					//$mailed++;
 					//if ($mailed > $maxmailed)
 					//{
@@ -367,8 +362,7 @@ div.tooltip {
 						[$server_data['email_abuse'], $ip, $type, 1, $id, md5($id . $ip . $type)],
 						$email_template
 					);
-					mail($server_data['email_abuse'], $subject, $message, $headers);
-					//mail('john@interserver.net', $subject, $message, $headers);
+					(new \MyAdmin\Mail())->clientMail($subject, $message, $server_data['email_abuse'], '');
 					//$mailed++;
 					//if ($mailed > $maxmailed)
 					//{
@@ -393,25 +387,7 @@ div.tooltip {
 	$table->add_field($table->make_input('ip', '', 30));
 	$table->add_row();
 	$table->add_field('Type of Abuse');
-	$table->add_field(make_select(
-		'type',
-		[
-		'scanning',
-		'hacking',
-		'spam',
-		'child porn',
-		'phishing site',
-		'other'
-	],
-		[
-		'scanning',
-		'hacking',
-		'spam',
-		'child porn',
-		'phishing site',
-		'other'
-								  ]
-					  ));
+	$table->add_field(make_select('type',['scanning','hacking','spam','child porn','phishing site','other'],['scanning','hacking','spam','child porn','phishing site','other']));
 	$table->add_row();
 	$table->add_field('Amount');
 	$table->add_field($table->make_input('amount', 1, 15));
