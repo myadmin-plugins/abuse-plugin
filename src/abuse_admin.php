@@ -28,7 +28,7 @@ function abuse_admin()
 		return false;
 	}
 	page_title('Report Abuse');
-	$email_template = file_get_contents(__DIR__.'/templates/abuse.tpl');
+	$email_template = file_get_contents(__DIR__.'/../../../../include/templates/email/client/abuse.tpl');
 	/* stats to get
 	biggest abusers (today, 3 day, 7 day, etc..)
 	Optionally limit abuse results to a single username
@@ -175,7 +175,7 @@ div.tooltip {
 					[$server_data['email_abuse'], $ip, $GLOBALS['tf']->variables->request['type'], $GLOBALS['tf']->variables->request['amount'], $id, md5($id . $ip . $GLOBALS['tf']->variables->request['type'])],
 					$email_template
 				);
-				(new \MyAdmin\Mail())->clientMail($subject, $message, $server_data['email_abuse'], '');
+				(new \MyAdmin\Mail())->clientMail($subject, $message, $server_data['email_abuse'], 'client/abuse.tpl');
 				//$mailed++;
 				//if ($mailed > $maxmailed)
 				//{
@@ -216,7 +216,7 @@ div.tooltip {
 						[$server_data['email_abuse'], $ip, $GLOBALS['tf']->variables->request['type'], 1, $id, md5($id . $ip . $GLOBALS['tf']->variables->request['type'])],
 						$email_template
 					);
-					(new \MyAdmin\Mail())->clientMail($subject, $message, $server_data['email_abuse'], '');
+					(new \MyAdmin\Mail())->clientMail($subject, $message, $server_data['email_abuse'], 'client/abuse.tpl');
 					//$mailed++;
 					//if ($mailed > $maxmailed)
 					//{
@@ -269,7 +269,7 @@ div.tooltip {
 							[$server_data['email_abuse'], $ip, $type, 1, $id, md5($id . $ip . $type)],
 							$email_template
 						);
-						(new \MyAdmin\Mail())->clientMail($subject, $message, $server_data['email_abuse'], '');
+						(new \MyAdmin\Mail())->clientMail($subject, $message, $server_data['email_abuse'], 'client/abuse.tpl');
 						//$mailed++;
 						//if ($mailed > $maxmailed)
 						//{
@@ -316,7 +316,7 @@ div.tooltip {
 						[$server_data['email_abuse'], $ip, $type, 1, $id, md5($id . $ip . $type)],
 						$email_template
 					);
-					(new \MyAdmin\Mail())->clientMail($subject, $message, $server_data['email_abuse'], '');
+					(new \MyAdmin\Mail())->clientMail($subject, $message, $server_data['email_abuse'], 'client/abuse.tpl');
 					//$mailed++;
 					//if ($mailed > $maxmailed)
 					//{
@@ -362,7 +362,7 @@ div.tooltip {
 						[$server_data['email_abuse'], $ip, $type, 1, $id, md5($id . $ip . $type)],
 						$email_template
 					);
-					(new \MyAdmin\Mail())->clientMail($subject, $message, $server_data['email_abuse'], '');
+					(new \MyAdmin\Mail())->clientMail($subject, $message, $server_data['email_abuse'], 'client/abuse.tpl');
 					//$mailed++;
 					//if ($mailed > $maxmailed)
 					//{

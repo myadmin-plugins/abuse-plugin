@@ -287,7 +287,7 @@ class ImapAbuseCheck
 							->setPlainmsg($this->plainmsg)
 							->setHtmlmsg($this->htmlmsg)
 							->save();
-						$email_template = file_get_contents(__DIR__.'/templates/abuse.tpl');
+						$email_template = file_get_contents(__DIR__.'/../../../../include/templates/email/client/abuse.tpl');
 						$message = str_replace(
 							['{$email}', '{$ip}', '{$type}', '{$count}', '{$id}', '{$key}'],
 							[$email, $ip, 'spam', 1, $id, md5("${id}${ip}${type}")],
@@ -299,7 +299,7 @@ class ImapAbuseCheck
 						}
 						if (($this->limit_ips === false || $this->ips[$ip] < $this->limit_ips) && !in_array($server_data['status'], ['canceled', 'expired'])) {
 							echo "{$this->imap_folder} Abuse Entry for {$ip} Added - Emailing {$email}".PHP_EOL;
-							(new \MyAdmin\Mail())->clientMail($subject, $message, $email, '');
+							(new \MyAdmin\Mail())->clientMail($subject, $message, $email, 'client/abuse.tpl');
 						} else {
 							echo "{$this->imap_folder} Abuse Entry for {$ip} Added - Not Emailing {$email} ({$this->ips[$ip]} >= {$this->limit_ips} Limit)".PHP_EOL;
 						}
