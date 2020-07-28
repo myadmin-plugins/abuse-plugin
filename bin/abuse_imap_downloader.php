@@ -25,7 +25,7 @@ while ($db->next_record(MYSQL_ASSOC)) {
 echo 'Loaded '.$total_sent.' Abuse Records From Today for '.count($abuse_ips).' Unique Email Addresses'.PHP_EOL;
 $checks = json_decode(file_get_contents(INCLUDE_ROOT.'/config/abuse.json'), true);
 foreach ($checks as $check) {
-	$abuse = new ImapAbuseCheck('{'.$check['host'].':'.$check['port'].'}'.$check['mailbox'], ABUSE_IMAP_USER, ABUSE_IMAP_PASS, $db, $check['delete_attachments'], $check['mail_limit']);
+	$abuse = new ImapAbuseCheck('{'.$check['host'].':'.$check['port'].'/imap/ssl}'.$check['mailbox'], ABUSE_IMAP_USER, ABUSE_IMAP_PASS, $db, $check['delete_attachments'], $check['mail_limit']);
 	foreach ($check['patterns'] as $pattern) {
 		if ($pattern['type'] == 'match') {
 			$abuse->register_preg_match($pattern['pattern'], $pattern['what']);
