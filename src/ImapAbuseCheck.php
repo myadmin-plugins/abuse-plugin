@@ -27,6 +27,10 @@ class ImapAbuseCheck
 	public $MC;
 	public $limit_ips = false;
 	public $ips = [];
+	public $mongo_client;
+	public $mb_db;
+	public $mb_users = [];
+	public $mb_ips = [];
 	public $emails = [];
 	public $abused = 0;
 	public $db;
@@ -74,6 +78,13 @@ class ImapAbuseCheck
 		} else {
 			$this->load_client_ips();
 		}
+		$this->mb_db = new Db(ZONEMTA_MYSQL_DB, ZONEMTA_MYSQL_USERNAME, ZONEMTA_MYSQL_PASSWORD, ZONEMTA_MYSQL_HOST);
+		$this->mb_ips = explode("\n", trim(`grep address /home/sites/zone-mta/config/pools.js |cut -d\" -f4`));
+		$this->mongo_client= new \MongoDB\Client('mongodb://'.ZONEMTA_USERNAME.':'.rawurlencode(ZONEMTA_PASSWORD).'@'.ZONEMTA_HOST.':27017/');
+		$this->mongo_users = $this->mongo_client->selectDatabase('zone-mta')->selectCollection('users');
+		$result = $this->mongo_users->find();
+		foreach ($result as $user)
+			$this->mb_users[] = $user->username;
 		$this->connect();
 		function_requirements('get_server_from_ip');
 	}
@@ -249,10 +260,42 @@ class ImapAbuseCheck
 					}
 				}
 				if ($ip !== false && validIp($ip, false) && (in_array($ip, $this->all_ips) || in_array($ip, $this->client_ips))) {
+					$mbUser = null;
+					$mbId = null;
 					if (in_array($ip, $this->client_ips)) {
 						$server_data = ['email' => 'sreekanth@nettlinxinc.com'];
 					} else {
 						$server_data = get_server_from_ip($ip);
+					}
+					if (in_array($ip, $this->mb_ips)) {
+						if (preg_match_all('/Authenticated sender: (?P<user>[^\)]*)\)/ms', $this->plainmsg, $matches) ||
+			                preg_match_all('/smtp.auth=(?P<user>\S*)\s/ms', $this->plainmsg, $matches)) {
+			                foreach ($matches['user'] as $user) {
+								if (in_array($user, $this->mb_users)) {
+									$mbUser = $this->mb_db->real_escape($user);
+									$this->mb_db->query("select * from mail where mail_username='{$mbUser}'");
+									if ($this->mb_db->num_rows() > 0) {
+										$this->mb_db->next_record(MYSQL_ASSOC);
+										$data = $GLOBALS['tf']->accounts->read($this->mb_db->Record['mail_custid']);
+										$email = (!isset($data['email_abuse']) || trim($data['email_abuse']) == '') ? $data['email'] : $data['email_abuse'];
+										$server_data = [
+											'email' => $data['emai'],
+											'status' => $this->mb_db->Record['mail_status']
+										];
+									}
+								}
+			                }
+					    }
+					    if (preg_match_all('/^ by (\S+|\S+ \(\S+\)) with (LMP|SMTP|ESMTP|ESMTPA|ESMTPS|ESMTPSA|HTTP) id (\S+)\.(\d{3})\s*$/mU', $this->plainmsg, $matches)) {
+					    	$ids = $matches[3];
+					    	foreach ($ids as $id) {
+					    		$id = $this->mb_db->real_escape($id);
+					    		$this->mb_db->query("select * from mail_messagestore where id='{$id}'");
+					    		if ($this->mb_db->num_rows() > 0) {
+									$mbId = $id;
+					    		}
+							}
+					    }
 					}
 					if (mb_substr($ip, 0, 10) == '66.45.228.' || (isset($server_data['email']) && $server_data['email'] != '')) {
 						//					if ($this->abused >= 5) exit;
@@ -279,6 +322,8 @@ class ImapAbuseCheck
 							->setAmount(1)
 							->setLid($email)
 							->setStatus('pending')
+							->setMbUser($mbUser)
+							->setMbId($mbId)
 							->save();
 						$id = $abuse->getId();
 						$abuseData = new Abuse_Data($db);
