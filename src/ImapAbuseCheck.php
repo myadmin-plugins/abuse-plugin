@@ -7,6 +7,7 @@
  * @category Abuse
  */
 
+use MyDb\Mysqli\Db;
 use MyAdmin\Orm\Abuse;
 use MyAdmin\Orm\Abuse_Data;
 
