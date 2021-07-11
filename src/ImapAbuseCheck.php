@@ -273,15 +273,15 @@ class ImapAbuseCheck
 			                preg_match_all('/smtp.auth=(?P<user>\S*)\s/ms', $this->plainmsg, $matches)) {
 			                foreach ($matches['user'] as $user) {
 								if (in_array($user, $this->mb_users)) {
-									$mbUser = $this->mb_db->real_escape($user);
-									$this->mb_db->query("select * from mail where mail_username='{$mbUser}'");
-									if ($this->mb_db->num_rows() > 0) {
-										$this->mb_db->next_record(MYSQL_ASSOC);
-										$data = $GLOBALS['tf']->accounts->read($this->mb_db->Record['mail_custid']);
+									$mbUser = $db->real_escape($user);
+									$db->query("select * from mail where mail_username='{$mbUser}'");
+									if ($db->num_rows() > 0) {
+										$db->next_record(MYSQL_ASSOC);
+										$data = $GLOBALS['tf']->accounts->read($db->Record['mail_custid']);
 										$email = (!isset($data['email_abuse']) || trim($data['email_abuse']) == '') ? $data['email'] : $data['email_abuse'];
 										$server_data = [
 											'email' => $data['emai'],
-											'status' => $this->mb_db->Record['mail_status']
+											'status' => $db->Record['mail_status']
 										];
 									}
 								}
