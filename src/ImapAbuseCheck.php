@@ -278,9 +278,9 @@ class ImapAbuseCheck
 									if ($db->num_rows() > 0) {
 										$db->next_record(MYSQL_ASSOC);
 										$data = $GLOBALS['tf']->accounts->read($db->Record['mail_custid']);
-										$email = (!isset($data['email_abuse']) || trim($data['email_abuse']) == '') ? $data['email'] : $data['email_abuse'];
+										$email = (!isset($data['email_abuse']) || trim($data['email_abuse']) == '') ? $data['account_lid'] : $data['email_abuse'];
 										$server_data = [
-											'email' => $data['emai'],
+											'email' => $email,
 											'status' => $db->Record['mail_status']
 										];
 									}
