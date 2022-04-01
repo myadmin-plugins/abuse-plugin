@@ -81,11 +81,15 @@ class ImapAbuseCheck
 		}
 		$this->mb_db = new Db(ZONEMTA_MYSQL_DB, ZONEMTA_MYSQL_USERNAME, ZONEMTA_MYSQL_PASSWORD, ZONEMTA_MYSQL_HOST);
 		$this->mb_ips = explode("\n", trim(`grep address /home/sites/zone-mta/config/pools.js |cut -d\" -f4`));
-		$this->mongo_client= new \MongoDB\Client('mongodb://'.ZONEMTA_USERNAME.':'.rawurlencode(ZONEMTA_PASSWORD).'@'.ZONEMTA_HOST.':27017/');
-		$this->mongo_users = $this->mongo_client->selectDatabase('zone-mta')->selectCollection('users');
-		$result = $this->mongo_users->find();
-		foreach ($result as $user)
-			$this->mb_users[] = $user->username;
+		try {
+			$this->mongo_client= new \MongoDB\Client('mongodb://'.ZONEMTA_USERNAME.':'.rawurlencode(ZONEMTA_PASSWORD).'@'.ZONEMTA_HOST.':27017/');
+			$this->mongo_users = $this->mongo_client->selectDatabase('zone-mta')->selectCollection('users');
+			$result = $this->mongo_users->find();
+			foreach ($result as $user)
+				$this->mb_users[] = $user->username;
+		} catch (\Exception $e) {
+			myadmin_log('myadmin', 'error', 'MongoDB '.ZONEMTA_HOST.' down: '.$e->getMessage(), __LINE__, __FILE__);
+		}
 		$this->connect();
 		function_requirements('get_server_from_ip');
 	}
@@ -270,8 +274,8 @@ class ImapAbuseCheck
 					}
 					if (in_array($ip, $this->mb_ips)) {
 						if (preg_match_all('/Authenticated sender: (?P<user>[^\)]*)\)/ms', $this->plainmsg, $matches) ||
-			                preg_match_all('/smtp.auth=(?P<user>\S*)\s/ms', $this->plainmsg, $matches)) {
-			                foreach ($matches['user'] as $user) {
+							preg_match_all('/smtp.auth=(?P<user>\S*)\s/ms', $this->plainmsg, $matches)) {
+							foreach ($matches['user'] as $user) {
 								if (in_array($user, $this->mb_users)) {
 									$mbUser = $db->real_escape($user);
 									$db->query("select * from mail where mail_username='{$mbUser}'");
@@ -285,22 +289,22 @@ class ImapAbuseCheck
 										];
 									}
 								}
-			                }
-					    }
-					    if (preg_match_all('/^ by (\S+|\S+ \(\S+\)) with (LMP|SMTP|ESMTP|ESMTPA|ESMTPS|ESMTPSA|HTTP) id (\S+)\.(\d{3})\s*$/mU', $this->plainmsg, $matches)) {
-					    	$ids = $matches[3];
-					    	foreach ($ids as $id) {
-					    		$id = $this->mb_db->real_escape($id);
-					    		$this->mb_db->query("select * from mail_messagestore where id='{$id}'");
-					    		if ($this->mb_db->num_rows() > 0) {
-									$mbId = $id;
-					    		}
 							}
-					    }
+						}
+						if (preg_match_all('/^ by (\S+|\S+ \(\S+\)) with (LMP|SMTP|ESMTP|ESMTPA|ESMTPS|ESMTPSA|HTTP) id (\S+)\.(\d{3})\s*$/mU', $this->plainmsg, $matches)) {
+							$ids = $matches[3];
+							foreach ($ids as $id) {
+								$id = $this->mb_db->real_escape($id);
+								$this->mb_db->query("select * from mail_messagestore where id='{$id}'");
+								if ($this->mb_db->num_rows() > 0) {
+									$mbId = $id;
+								}
+							}
+						}
 					}
 					if (mb_substr($ip, 0, 10) == '66.45.228.' || (isset($server_data['email']) && $server_data['email'] != '')) {
 						//					if ($this->abused >= 5) exit;
-						$email = (null === $server_data['email_abuse'] ? $server_data['email'] : $server_data['email_abuse']);
+						$email = (!isset($server_data['email_abuse']) || is_null($server_data['email_abuse']) || trim($server_data['email_abuse']) == '' ? $server_data['email'] : $server_data['email_abuse']);
 						$subject = 'InterServer Abuse Report for '.$ip;
 						if (mb_substr($ip, 0, 10) == '66.45.228.') {
 							echo "{$this->imap_folder} Overwriting IP $ip Contact $email => abuse@interserver.net".PHP_EOL;
