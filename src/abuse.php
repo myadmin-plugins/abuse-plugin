@@ -98,26 +98,8 @@ jQuery(document).ready(function() {
 				add_output('Invalid complaint');
 			}
 		} else {
-			$db->query("select * from abuse where abuse_status='pending' and abuse_lid='" . $db->real_escape($GLOBALS['tf']->accounts->data['account_lid']) . "'");
-			if ($db->num_rows() > 0) {
-				$table = new \TFTable;
-				$table->set_title('Abuse Complaints');
-				$table->add_field('IP');
-				$table->add_field('Time');
-				$table->add_field('Type');
-				$table->add_field('');
-				$table->add_row();
-				while ($db->next_record(MYSQL_ASSOC)) {
-					$table->add_field($db->Record['abuse_ip']);
-					$table->add_field($db->Record['abuse_time']);
-					$table->add_field($db->Record['abuse_type']);
-					$table->add_field('<a href="'.$GLOBALS['tf']->link('abuse.php', 'id='.$db->Record['abuse_id'] . ($logged_in === true ? '' : '&key='.$key)).'">Update</a>');
-					$table->add_row();
-				}
-				add_output($table->get_table());
-			} else {
-				add_output('No Abuse complaints');
-			}
+			function_requirements('crud_abuse');
+			crud_abuse();
 		}
 	}
 }
