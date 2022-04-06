@@ -90,64 +90,8 @@ function abuse_admin()
 	add_output($table2->get_table());
 
 	if (isset($lid)) {
-		$db->query("select * from abuse left join abuse_data using (abuse_id) where abuse_lid='{$lid}'");
-		$rows = [];
-		while ($db->next_record(MYSQL_ASSOC)) {
-			unset($db->Record['abuse_lid']);
-			if (!isset($header)) {
-				$header = array_keys($db->Record);
-				foreach ($header as $idx => $field) {
-					$header[$idx] = ucwords(str_replace('abuse_', '', $field));
-				}
-			}
-			$headerlimit = 50;
-			$db->Record['abuse_headers'] = (mb_strlen($db->Record['abuse_headers']) <= $headerlimit ? $db->Record['abuse_headers'] : '<a href="'.$GLOBALS['tf']->link('index.php', 'choice=none.abuse&lid='.$lid.'&id='.$db->Record['abuse_id']).'" class="btn" data-toggle="popover" data-trigger="hover" data-placement="bottom" '.(stripos($db->Record['abuse_headers'], '<html>') === false ? 'data-html="true" data-content="'.htmlentities(nl2br($db->Record['abuse_headers']), ENT_QUOTES, 'UTF-8').'"' : 'data-html="true" data-content="'.htmlentities($db->Record['abuse_headers'], ENT_QUOTES, 'UTF-8').'"').'>'.mb_substr($db->Record['abuse_headers'], 0, $headerlimit).'...</a>');
-			$rows[] = $db->Record;
-			if (isset($GLOBALS['tf']->variables->request['id']) && $GLOBALS['tf']->variables->request['id'] == $db->Record['abuse_id']) {
-				$table = new \TFTable;
-				$table->set_title('Abuse '.$db->Record['abuse_id'].' Entry');
-				foreach ($db->Record as $key => $value) {
-					$table->add_field($key);
-					$table->add_field(htmlspecial($value));
-					$table->add_row();
-				}
-				add_output($table->get_table());
-			}
-		}
-		$GLOBALS['tf']->add_html_head_js_string('
-jQuery(document).ready(function () {
-	jQuery("[data-toggle=popover]").popover();
-	//jQuery("[data-toggle=tooltip]").tooltip();
-});
-');
-		$GLOBALS['tf']->add_html_head_css_file('
-.tablesorter>body>tr>td {
-	opacity: 1;
-}
-.tablesorter-jui tbody>tr.hover>td,
-.tablesorter-jui tbody>tr:hover>td {
-	opacity: 1;
-	filter: alpha(opacity=100);
-}
-div.popover {
-	max-width: 850px;
-	overflow: scroll;
-}
-div.tooltip {
-	width: 500px;
-	height: 300px;
-}
-');
-		add_js('tablesorter');
-		$smarty = new \TFSmarty;
-		$smarty->debugging = true;
-		$smarty->assign('sortcol', 0);
-		$smarty->assign('sortdir', 1);
-		$smarty->assign('size', 10);
-		$smarty->assign('textextraction', "'complex'");
-		$smarty->assign('table_header', $header);
-		$smarty->assign('table_rows', $rows);
-		add_output(str_replace(['mainelement', 'itemtable', 'itempager'], [$module.'abusemainelement', $module.'abusetable', $module.'abusepager'], $smarty->fetch('tablesorter/tablesorter.tpl')));
+		function_requirements('crud_abuse');
+		crud_abuse();
 	}
 	if (isset($GLOBALS['tf']->variables->request['headers']) && verify_csrf('abuse_admin')) {
 		$ip = $GLOBALS['tf']->variables->request['ip'];
