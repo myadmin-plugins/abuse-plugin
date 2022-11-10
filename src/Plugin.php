@@ -73,6 +73,6 @@ class Plugin
          **/
         $settings = $event->getSubject();
         $settings->add_text_setting(_('General'), _('Abuse'), 'abuse_imap_user', _('Abuse IMAP User'), _('Abuse IMAP Username'), ABUSE_IMAP_USER);
-        $settings->add_text_setting(_('General'), _('Abuse'), 'abuse_imap_pass', _('Abuse IMAP Pass'), _('Abuse IMAP Password'), ABUSE_IMAP_PASS);
+        $settings->add_password_setting(_('General'), _('Abuse'), 'abuse_imap_pass', _('Abuse IMAP Pass'), _('Abuse IMAP Password'), ABUSE_IMAP_PASS);
     }
 }
