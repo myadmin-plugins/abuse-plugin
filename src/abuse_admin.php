@@ -24,6 +24,7 @@ function abuse_admin()
     $limit = 'limit 20';
     function_requirements('has_acl');
     if ($GLOBALS['tf']->ima != 'admin' || !has_acl('client_billing')) {
+        myadmin_log('myadmin', 'debug', 'Not Admin', __LINE__, __FILE__);
         dialog('Not admin', 'Not Admin or you lack the permissions to view this page.');
         return false;
     }

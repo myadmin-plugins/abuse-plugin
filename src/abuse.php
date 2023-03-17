@@ -65,6 +65,8 @@ jQuery(document).ready(function() {
 ');
     } else {
         $smarty = new TFSmarty();
+        foreach (['strtoupper', 'in_array', 'json_encode'] as $function)
+            $smarty->registerPlugin('modifier', $function, $function);
         page_title('Manage Abuse Complaints');
         if (isset($GLOBALS['tf']->variables->request['id'])) {
             $id = (int)$GLOBALS['tf']->variables->request['id'];
