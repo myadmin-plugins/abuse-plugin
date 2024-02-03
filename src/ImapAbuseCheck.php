@@ -473,7 +473,7 @@ class ImapAbuseCheck
         // so an attached text file (type 0) is not mistaken as the message.
         if (isset($params['filename']) || isset($params['name'])) {
             // filename may be given as 'Filename' or 'Name' or both
-            $filename = isset($params['filename']) ? $params['filename'] : $params['name'];
+            $filename = $params['filename'] ?? $params['name'];
             // filename may be encoded, so see imap_mime_header_decode()
             $this->attachments[$filename] = $data; // this is a problem if two files have same name
         }
