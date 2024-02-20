@@ -423,7 +423,7 @@ class ImapAbuseCheck
         $this->htmlmsg = $this->plainmsg = $this->charset = '';
         $this->attachments = [];
         // HEADER
-        $h = imap_header($this->mbox, $mid);
+        $h = imap_headerinfo($this->mbox, $mid);
         // add code here to get date, from, to, cc, subject...
         // BODY
         $s = imap_fetchstructure($this->mbox, $mid);
