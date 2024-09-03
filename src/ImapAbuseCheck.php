@@ -341,7 +341,7 @@ class ImapAbuseCheck
                         $email_template = file_get_contents(__DIR__.'/../../../../include/templates/email/client/abuse.tpl');
                         $message = str_replace(
                             ['{$email}', '{$ip}', '{$type}', '{$count}', '{$id}', '{$key}'],
-                            [$email, $ip, 'spam', 1, $id, md5("${id}${ip}${type}")],
+                            [$email, $ip, 'spam', 1, $id, md5("{$id}{$ip}{$type}")],
                             $email_template
                         );
                         //$email = 'john@interserver.net';
