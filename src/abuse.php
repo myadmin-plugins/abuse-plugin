@@ -71,6 +71,9 @@ jQuery(document).ready(function() {
             $db->query("select * from abuse left join abuse_data using (abuse_id) where abuse_id={$id}");
             if ($db->num_rows() > 0) {
                 $db->next_record(MYSQL_ASSOC);
+                if (!is_null($db->Record['abuse_attachments'])) {
+                    $db->Record['abuse_attachments'] = json_decode($db->Record['abuse_attachments'], true);
+                }
                 $ip = $db->Record['abuse_ip'];
                 $server_data = get_server_from_ip($ip);
                 if (($logged_in && $GLOBALS['tf']->accounts->data['account_lid'] == $server_data['email']) || ($logged_in && $GLOBALS['tf']->accounts->data['account_lid'] == $db->Record['abuse_lid']) || ($logged_in == false) || ($GLOBALS['tf']->ima == 'admin')) {
