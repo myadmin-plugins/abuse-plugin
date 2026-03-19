@@ -1,28 +1,79 @@
-# Abuse handling plugin for MyAdmin
+# MyAdmin Abuse Plugin
 
-Abuse handling plugin for MyAdmin
+[![Tests](https://github.com/detain/myadmin-abuse-plugin/actions/workflows/tests.yml/badge.svg)](https://github.com/detain/myadmin-abuse-plugin/actions/workflows/tests.yml)
+[![Latest Stable Version](https://poser.pugx.org/detain/myadmin-abuse-plugin/version)](https://packagist.org/packages/detain/myadmin-abuse-plugin)
+[![Total Downloads](https://poser.pugx.org/detain/myadmin-abuse-plugin/downloads)](https://packagist.org/packages/detain/myadmin-abuse-plugin)
+[![License](https://poser.pugx.org/detain/myadmin-abuse-plugin/license)](https://packagist.org/packages/detain/myadmin-abuse-plugin)
 
-## Build Status and Code Analysis
+Abuse handling plugin for the [MyAdmin](https://github.com/detain/myadmin) control panel. This plugin monitors IMAP mailboxes for incoming abuse complaints (spam reports, blacklist notifications, phishing alerts), matches the offending IP addresses to customer services, and automatically notifies the responsible account holders.
 
-Site          | Status
---------------|---------------------------
-![Travis-CI](http://i.is.cc/storage/GYd75qN.png "Travis-CI")     | [![Build Status](https://travis-ci.org/detain/myadmin-abuse-plugin.svg?branch=master)](https://travis-ci.org/detain/myadmin-abuse-plugin)
-![CodeClimate](http://i.is.cc/storage/GYlageh.png "CodeClimate")  | [![Code Climate](https://codeclimate.com/github/detain/myadmin-abuse-plugin/badges/gpa.svg)](https://codeclimate.com/github/detain/myadmin-abuse-plugin) [![Test Coverage](https://codeclimate.com/github/detain/myadmin-abuse-plugin/badges/coverage.svg)](https://codeclimate.com/github/detain/myadmin-abuse-plugin/coverage) [![Issue Count](https://codeclimate.com/github/detain/myadmin-abuse-plugin/badges/issue_count.svg)](https://codeclimate.com/github/detain/myadmin-abuse-plugin)
-![Scrutinizer](http://i.is.cc/storage/GYeUnux.png "Scrutinizer")   | [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/myadmin-plugins/abuse-plugin/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/myadmin-plugins/abuse-plugin/?branch=master) [![Code Coverage](https://scrutinizer-ci.com/g/myadmin-plugins/abuse-plugin/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/myadmin-plugins/abuse-plugin/?branch=master) [![Build Status](https://scrutinizer-ci.com/g/myadmin-plugins/abuse-plugin/badges/build.png?b=master)](https://scrutinizer-ci.com/g/myadmin-plugins/abuse-plugin/build-status/master)
-![Codacy](http://i.is.cc/storage/GYi66Cx.png "Codacy")        | [![Codacy Badge](https://api.codacy.com/project/badge/Grade/226251fc068f4fd5b4b4ef9a40011d06)](https://www.codacy.com/app/detain/myadmin-abuse-plugin) [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/25fa74eb74c947bf969602fcfe87e349)](https://www.codacy.com/app/detain/myadmin-abuse-plugin?utm_source=github.com&utm_medium=referral&utm_content=detain/myadmin-abuse-plugin&utm_campaign=Badge_Coverage)
-![Coveralls](http://i.is.cc/storage/GYjNSim.png "Coveralls")    | [![Coverage Status](https://coveralls.io/repos/github/detain/db_abstraction/badge.svg?branch=master)](https://coveralls.io/github/detain/myadmin-abuse-plugin?branch=master)
-![Packagist](http://i.is.cc/storage/GYacBEX.png "Packagist")     | [![Latest Stable Version](https://poser.pugx.org/detain/myadmin-abuse-plugin/version)](https://packagist.org/packages/detain/myadmin-abuse-plugin) [![Total Downloads](https://poser.pugx.org/detain/myadmin-abuse-plugin/downloads)](https://packagist.org/packages/detain/myadmin-abuse-plugin) [![Latest Unstable Version](https://poser.pugx.org/detain/myadmin-abuse-plugin/v/unstable)](//packagist.org/packages/detain/myadmin-abuse-plugin) [![Monthly Downloads](https://poser.pugx.org/detain/myadmin-abuse-plugin/d/monthly)](https://packagist.org/packages/detain/myadmin-abuse-plugin) [![Daily Downloads](https://poser.pugx.org/detain/myadmin-abuse-plugin/d/daily)](https://packagist.org/packages/detain/myadmin-abuse-plugin) [![License](https://poser.pugx.org/detain/myadmin-abuse-plugin/license)](https://packagist.org/packages/detain/myadmin-abuse-plugin)
+## Features
 
+- **IMAP Abuse Monitoring** -- Connects to configurable IMAP mailboxes and parses abuse complaint emails using regex pattern matching to extract offending IP addresses.
+- **IP-to-Customer Resolution** -- Looks up IP addresses against the server inventory and client IP pools to identify the responsible customer.
+- **MailBaby Integration** -- Detects outbound mail abuse through ZoneMTA / MailBaby user matching and message ID correlation.
+- **Admin Dashboard** -- Provides an admin interface for manually reporting abuse, importing UCEProtect CSV data, and importing Trend Micro blocklist entries.
+- **Client Self-Service** -- Allows customers to view and respond to abuse complaints via authenticated or token-based URLs.
+- **Automated Notifications** -- Sends templated email notifications to affected customers with complaint details and response links.
 
 ## Installation
 
-Install with composer like
+Install with Composer:
 
 ```sh
 composer require detain/myadmin-abuse-plugin
 ```
 
+The plugin registers itself with the MyAdmin event dispatcher and adds:
+
+- `system.settings` -- IMAP credential configuration fields
+- `ui.menu` -- Admin menu entry for the abuse dashboard
+- `function.requirements` -- Page and class autoload registrations
+
+## Usage
+
+### Plugin Registration
+
+The plugin hooks are registered automatically when loaded by the MyAdmin plugin system:
+
+```php
+$hooks = \Detain\MyAdminAbuse\Plugin::getHooks();
+// Returns: ['system.settings' => ..., 'ui.menu' => ..., 'function.requirements' => ...]
+```
+
+### IMAP Abuse Checker
+
+The `ImapAbuseCheck` class processes abuse mailboxes from cron:
+
+```php
+$abuse = new ImapAbuseCheck($imapServer, $username, $password, $db);
+$abuse->register_preg_match('/pattern with %IP%/', 'headers', 'ip');
+$abuse->process('spam', 100);
+```
+
+### Admin Interface
+
+Navigate to the abuse admin page in MyAdmin to:
+
+- View abuse statistics (24-hour, 3-day, 7-day breakdowns)
+- Submit individual abuse reports by IP
+- Bulk-report multiple IPs
+- Import UCEProtect CSV files
+- Import Trend Micro blocklist data
+
+## Running Tests
+
+```sh
+composer install
+vendor/bin/phpunit
+```
+
+To generate a coverage report:
+
+```sh
+vendor/bin/phpunit --coverage-text
+```
+
 ## License
 
-The Abuse handling plugin for MyAdmin class is licensed under the LGPL-v2.1 license.
-
+This package is licensed under the [LGPL-2.1](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html) license.
