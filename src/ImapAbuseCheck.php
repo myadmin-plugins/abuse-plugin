@@ -29,6 +29,7 @@ class ImapAbuseCheck
     public $limit_ips = false;
     public $ips = [];
     public $mongo_client;
+    public $mongo_users;
     public $mb_db;
     public $mb_users = [];
     public $mb_ips = [];
