@@ -73,7 +73,20 @@ jQuery(document).ready(function() {
                 $db->next_record(MYSQL_ASSOC);
                 if (!is_null($db->Record['abuse_attachments'])) {
                     $decoded = json_decode($db->Record['abuse_attachments'], true);
-                    $db->Record['abuse_attachments'] = is_array($decoded) ? array_values(array_filter($decoded, 'is_array')) : null;
+                    if (is_array($decoded)) {
+                        // Filter to keep only array values that have required attachment keys
+                        $db->Record['abuse_attachments'] = [];
+                        foreach ($decoded as $idx => $item) {
+                            if (is_array($item) && isset($item['contentType']) || isset($item['filename']) || isset($item['content'])) {
+                                $db->Record['abuse_attachments'][] = $item;
+                            }
+                        }
+                        if (empty($db->Record['abuse_attachments'])) {
+                            $db->Record['abuse_attachments'] = null;
+                        }
+                    } else {
+                        $db->Record['abuse_attachments'] = null;
+                    }
                 }
                 $ip = $db->Record['abuse_ip'];
                 $server_data = get_server_from_ip($ip);
