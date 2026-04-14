@@ -83,6 +83,10 @@ jQuery(document).ready(function() {
                         $db->query("update abuse_data set abuse_response='" . $db->real_escape($GLOBALS['tf']->variables->request['response']) . "' where abuse_id={$id}", __LINE__, __FILE__);
                         $db->query("select * from abuse left join abuse_data using (abuse_id) where abuse_id={$id}");
                         $db->next_record(MYSQL_ASSOC);
+                        if (!is_null($db->Record['abuse_attachments'])) {
+                            $decoded = json_decode($db->Record['abuse_attachments'], true);
+                            $db->Record['abuse_attachments'] = is_array($decoded) ? array_values(array_filter($decoded, 'is_array')) : null;
+                        }
                         add_output('Abuse Entry Updated <a href="'.$GLOBALS['tf']->link('index.php', 'choice=none.abuse').'">View Pending Abuse Complaints</a>');
                     }
                     $smarty->assign($db->Record);
