@@ -283,7 +283,7 @@ class ImapAbuseCheck
                                     $db->query("select * from mail where mail_username='{$mbUser}'");
                                     if ($db->num_rows() > 0) {
                                         $db->next_record(MYSQL_ASSOC);
-                                        $data = $GLOBALS['tf']->accounts->read($db->Record['mail_custid']);
+                                        $data = \MyAdmin\App::accounts()->read($db->Record['mail_custid']);
                                         $email = (!isset($data['email_abuse']) || trim($data['email_abuse']) == '') ? $data['account_lid'] : $data['email_abuse'];
                                         $server_data = [
                                             'email' => $email,

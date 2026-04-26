@@ -23,7 +23,7 @@ function abuse_admin()
     $maxmailed = 5;
     $limit = 'limit 20';
     function_requirements('has_acl');
-    if ($GLOBALS['tf']->ima != 'admin' || !has_acl('client_billing')) {
+    if (\MyAdmin\App::ima() != 'admin' || !has_acl('client_billing')) {
         myadmin_log('myadmin', 'debug', 'Not Admin', __LINE__, __FILE__);
         dialog('Not admin', 'Not Admin or you lack the permissions to view this page.');
         return false;
@@ -40,9 +40,9 @@ function abuse_admin()
     $table2->hide_title();
     $table2->hide_table();
     $table2->hide_form();
-    if (isset($GLOBALS['tf']->variables->request['lid'])) {
-        $lid = $db->real_escape($GLOBALS['tf']->variables->request['lid']);
-        $lid_data = $GLOBALS['tf']->accounts->read($GLOBALS['tf']->accounts->cross_reference($lid));
+    if (isset(\MyAdmin\App::variables()->request['lid'])) {
+        $lid = $db->real_escape(\MyAdmin\App::variables()->request['lid']);
+        $lid_data = \MyAdmin\App::accounts()->read(\MyAdmin\App::accounts()->cross_reference($lid));
         $table = new \TFTable();
         $table->set_col_options('style="vertical-align: middle; padding-top: 1px; padding-right: 3px;"');
         if (isset($lid_data['picture']) && null !== $lid_data['picture'] && $lid_data['picture'] != '') {
@@ -94,8 +94,8 @@ function abuse_admin()
         function_requirements('crud_abuse');
         crud_abuse();
     }
-    if (isset($GLOBALS['tf']->variables->request['headers']) && verify_csrf('abuse_admin')) {
-        $ip = $GLOBALS['tf']->variables->request['ip'];
+    if (isset(\MyAdmin\App::variables()->request['headers']) && verify_csrf('abuse_admin')) {
+        $ip = \MyAdmin\App::variables()->request['ip'];
         if (validIp($ip, false)) {
             $server_data = get_server_from_ip($ip);
             if (isset($server_data['email']) && $server_data['email'] != '') {
@@ -104,20 +104,20 @@ function abuse_admin()
                     'abuse_id' => null,
                     'abuse_time' => mysql_now(),
                     'abuse_ip' => $ip,
-                    'abuse_type' => $GLOBALS['tf']->variables->request['type'],
-                    'abuse_amount' => $GLOBALS['tf']->variables->request['amount'],
+                    'abuse_type' => \MyAdmin\App::variables()->request['type'],
+                    'abuse_amount' => \MyAdmin\App::variables()->request['amount'],
                     'abuse_lid' => $email,
                     'abuse_status' => 'pending'
                 ]), __LINE__, __FILE__);
                 $id = $db->getLastInsertId('abuse', 'abuse_id');
                 $db->query(make_insert_query('abuse_data', [
                     'abuse_id' => $id,
-                    'abuse_headers' => ImapAbuseCheck::fix_headers($GLOBALS['tf']->variables->request['headers']),
+                    'abuse_headers' => ImapAbuseCheck::fix_headers(\MyAdmin\App::variables()->request['headers']),
                 ]), __LINE__, __FILE__);
                 $subject = 'InterServer Abuse Report for '.$ip;
                 $message = str_replace(
                     ['{$email}', '{$ip}', '{$type}', '{$count}', '{$id}', '{$key}'],
-                    [$server_data['email_abuse'], $ip, $GLOBALS['tf']->variables->request['type'], $GLOBALS['tf']->variables->request['amount'], $id, md5($id . $ip . $GLOBALS['tf']->variables->request['type'])],
+                    [$server_data['email_abuse'], $ip, \MyAdmin\App::variables()->request['type'], \MyAdmin\App::variables()->request['amount'], $id, md5($id . $ip . \MyAdmin\App::variables()->request['type'])],
                     $email_template
                 );
                 (new \MyAdmin\Mail())->clientMail($subject, $message, $server_data['email_abuse'], 'client/abuse.tpl');
@@ -133,8 +133,8 @@ function abuse_admin()
             }
         }
     }
-    if (isset($GLOBALS['tf']->variables->request['evidence']) && verify_csrf('abuse_admin_multiple')) {
-        $ips = explode("\n", trim($GLOBALS['tf']->variables->request['ips']));
+    if (isset(\MyAdmin\App::variables()->request['evidence']) && verify_csrf('abuse_admin_multiple')) {
+        $ips = explode("\n", trim(\MyAdmin\App::variables()->request['ips']));
         foreach ($ips as $ip) {
             $ip = trim($ip);
             if (validIp($ip, false)) {
@@ -145,7 +145,7 @@ function abuse_admin()
                         'abuse_id' => null,
                         'abuse_time' => mysql_now(),
                         'abuse_ip' => $ip,
-                        'abuse_type' => $GLOBALS['tf']->variables->request['type'],
+                        'abuse_type' => \MyAdmin\App::variables()->request['type'],
                         'abuse_amount' => 1,
                         'abuse_lid' => $email,
                         'abuse_status' => 'pending'
@@ -153,12 +153,12 @@ function abuse_admin()
                     $id = $db->getLastInsertId('abuse', 'abuse_id');
                     $db->query(make_insert_query('abuse_data', [
                         'abuse_id' => $id,
-                        'abuse_headers' => ImapAbuseCheck::fix_headers($GLOBALS['tf']->variables->request['headers']),
+                        'abuse_headers' => ImapAbuseCheck::fix_headers(\MyAdmin\App::variables()->request['headers']),
                     ]), __LINE__, __FILE__);
                     $subject = 'InterServer Abuse Report for '.$ip;
                     $message = str_replace(
                         ['{$email}', '{$ip}', '{$type}', '{$count}', '{$id}', '{$key}'],
-                        [$server_data['email_abuse'], $ip, $GLOBALS['tf']->variables->request['type'], 1, $id, md5($id . $ip . $GLOBALS['tf']->variables->request['type'])],
+                        [$server_data['email_abuse'], $ip, \MyAdmin\App::variables()->request['type'], 1, $id, md5($id . $ip . \MyAdmin\App::variables()->request['type'])],
                         $email_template
                     );
                     (new \MyAdmin\Mail())->clientMail($subject, $message, $server_data['email_abuse'], 'client/abuse.tpl');
@@ -187,8 +187,8 @@ function abuse_admin()
                     $parts = explode(',', $lines[$x]);
                     $ip = $parts[0];
                     $date = new \DateTime(is_numeric($parts[1]) && mb_strlen($parts[1]) == 10 ? date(MYSQL_DATE_FORMAT, $parts[1]) : $parts[1]);
-                    if (isset($GLOBALS['tf']->variables->request['dates']) && $GLOBALS['tf']->variables->request['dates'] != 'all' && is_numeric($GLOBALS['tf']->variables->request['dates'])) {
-                        $limit_date = new \DateTime(date(MYSQL_DATE_FORMAT, time() - $GLOBALS['tf']->variables->request['dates']));
+                    if (isset(\MyAdmin\App::variables()->request['dates']) && \MyAdmin\App::variables()->request['dates'] != 'all' && is_numeric(\MyAdmin\App::variables()->request['dates'])) {
+                        $limit_date = new \DateTime(date(MYSQL_DATE_FORMAT, time() - \MyAdmin\App::variables()->request['dates']));
                         if ($date < $limit_date) {
                             continue;
                         }
@@ -232,9 +232,9 @@ function abuse_admin()
             add_output('<pre style="text-align: left;">$_FILES = '.var_export($_FILES, true).';</pre>');
         }
     }
-    if (isset($GLOBALS['tf']->variables->request['csvtext']) && $GLOBALS['tf']->variables->request['csvtext'] != '' && verify_csrf('abuse_admin_uce')) {
+    if (isset(\MyAdmin\App::variables()->request['csvtext']) && \MyAdmin\App::variables()->request['csvtext'] != '' && verify_csrf('abuse_admin_uce')) {
         add_output('Importing CSV Text<br>');
-        $lines = explode("\n", $GLOBALS['tf']->variables->request['csvtext']);
+        $lines = explode("\n", \MyAdmin\App::variables()->request['csvtext']);
         for ($x = 0, $x_max = count($lines); $x < $x_max; $x++) {
             if (mb_strpos($lines[$x], ',') !== false && is_numeric(mb_substr($lines[$x], 0, 1))) {
                 $parts = explode(',', $lines[$x]);
@@ -277,9 +277,9 @@ function abuse_admin()
     }
     // display the current abuse entries
     //uceprotect links to - http://www.uceprotect.net/en/rblcheck.php?ipr=$ip
-    if (isset($GLOBALS['tf']->variables->request['tmcsvtext']) && $GLOBALS['tf']->variables->request['tmcsvtext'] != '' && verify_csrf('abuse_admin_trend')) {
+    if (isset(\MyAdmin\App::variables()->request['tmcsvtext']) && \MyAdmin\App::variables()->request['tmcsvtext'] != '' && verify_csrf('abuse_admin_trend')) {
         add_output('Importing TrendMicro CSV Text<br>');
-        $lines = explode("\n", $GLOBALS['tf']->variables->request['tmcsvtext']);
+        $lines = explode("\n", \MyAdmin\App::variables()->request['tmcsvtext']);
         for ($x = 0, $x_max = count($lines); $x < $x_max; $x++) {
             if (is_numeric(mb_substr($lines[$x], 0, 1))) {
                 $ip = $lines[$x];
@@ -299,7 +299,7 @@ function abuse_admin()
                     $id = $db->getLastInsertId('abuse', 'abuse_id');
                     $db->query(make_insert_query('abuse_data', [
                         'abuse_id' => $id,
-                        'abuse_headers' => ImapAbuseCheck::fix_headers($GLOBALS['tf']->variables->request['headers']),
+                        'abuse_headers' => ImapAbuseCheck::fix_headers(\MyAdmin\App::variables()->request['headers']),
                     ]), __LINE__, __FILE__);
                     $subject = 'InterServer Abuse Report for '.$ip;
                     $message = str_replace(
