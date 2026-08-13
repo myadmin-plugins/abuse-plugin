@@ -1,6 +1,6 @@
 ---
 name: phpunit-reflection-test
-description: Writes a PHPUnit 9 test class using ReflectionClass to validate class structure without instantiation or DB. Use when adding tests for new methods, properties, or static behaviors in src/Plugin.php or src/ImapAbuseCheck.php. Matches the pattern in tests/PluginTest.php and tests/ImapAbuseCheckTest.php. Trigger phrases: 'add test', 'write test for', 'test method signature', 'test class structure'. Do NOT use for integration tests that require DB, IMAP connection, or MongoDB. NOTE: for a plugin's contract/behavioral tests (tests/ContractTest.php, the shared harness, composer myadmin:scaffold-tests) use the plugin-contract-tests skill instead — this skill's reflection-only guidance predates that harness.
+description: Writes a PHPUnit 9 test class using ReflectionClass to validate class structure without instantiation or DB. Use when adding tests for new methods, properties, or static behaviors in src/Plugin.php or src/ImapAbuseCheck.php. Matches the pattern in tests/PluginTest.php and tests/ImapAbuseCheckTest.php. Trigger phrases: 'add test', 'write test for', 'test method signature', 'test class structure'. Do NOT use for integration tests that require DB, IMAP connection, or MongoDB. For a plugin's contract or behavioral tests (tests/ContractTest.php, the shared harness, composer myadmin:scaffold-tests) use the plugin-contract-tests skill instead — this skill's reflection-only guidance predates that harness.
 ---
 <!-- myadmin-contract-harness-notice -->
 > ### ⚠️ Read this before the rest of the file
